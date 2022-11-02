@@ -187,18 +187,27 @@ function addToFrequentlyUsedEmojis(frequentlyUsedEmojis, newEmoji) {
  * @returns {String}
  */
 function replaceEmojis(text) {
+    let latestIconPosition = -1;
     let newText = text;
     const emojiData = text.match(CONST.REGEX.EMOJI_NAME);
     if (!emojiData || emojiData.length === 0) {
-        return text;
+        return {
+            newComment: newText,
+            latestIconPosition,
+
+        };
     }
     for (let i = 0; i < emojiData.length; i++) {
         const checkEmoji = emojisTrie.search(emojiData[i].slice(1, -1));
         if (checkEmoji && checkEmoji.metaData.code) {
             newText = newText.replace(emojiData[i], checkEmoji.metaData.code);
+            latestIconPosition = text.indexOf(emojiData[i]) + checkEmoji.metaData.code.length;
         }
     }
-    return newText;
+    return {
+        newComment: newText,
+        latestIconPosition,
+    };
 }
 
 /**

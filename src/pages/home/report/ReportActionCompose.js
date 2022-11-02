@@ -380,10 +380,13 @@ class ReportActionCompose extends React.Component {
      * @param {Boolean} shouldDebounceSaveComment
      */
     updateComment(comment, shouldDebounceSaveComment) {
-        const newComment = EmojiUtils.replaceEmojis(comment);
+        const {newComment, latestIconPosition} = EmojiUtils.replaceEmojis(comment);
         this.setState({
             isCommentEmpty: !!newComment.match(/^(\s|`)*$/),
             value: newComment,
+        }, () => {
+            if (latestIconPosition === -1) { return; }
+            this.textInput.selectionEnd = latestIconPosition;
         });
 
         // Indicate that draft has been created.
