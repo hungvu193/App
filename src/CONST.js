@@ -30,6 +30,8 @@ const CONST = {
     AVATAR_ALLOWED_EXTENSIONS: ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
 
     // Minimum width and height size in px for a selected image
+    AVATAR_MAX_WIDTH_PX: 4000,
+    AVATAR_MAX_HEIGHT_PX: 4000,
     AVATAR_MIN_WIDTH_PX: 80,
     AVATAR_MIN_HEIGHT_PX: 80,
     NEW_EXPENSIFY_URL: ACTIVE_EXPENSIFY_URL,
