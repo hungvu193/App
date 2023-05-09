@@ -85,7 +85,7 @@ const IOUAction = (props) => {
         !_.isEmpty(props.iouReport)
         && !_.isEmpty(props.reportActions)
         && props.chatReport.hasOutstandingIOU
-        && props.isMostRecentIOUReportAction
+        && (props.isMostRecentIOUReportAction || props.isMostRecentIOUSendReportAction)
         && props.action.pendingAction === CONST.RED_BRICK_ROAD_PENDING_ACTION.ADD
         && props.network.isOffline
     ) {

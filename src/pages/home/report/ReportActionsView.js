@@ -63,6 +63,7 @@ class ReportActionsView extends React.Component {
 
         this.currentScrollOffset = 0;
         this.mostRecentIOUReportActionID = ReportActionsUtils.getMostRecentIOURequestActionID(props.reportActions);
+        this.mostRecentSendIOUReportActionID = ReportActionsUtils.getMostRecentIOUSendRequestActionID(props.reportActions);
         this.trackScroll = this.trackScroll.bind(this);
         this.toggleFloatingMessageCounter = this.toggleFloatingMessageCounter.bind(this);
         this.loadMoreChats = this.loadMoreChats.bind(this);
@@ -122,6 +123,7 @@ class ReportActionsView extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         if (!_.isEqual(nextProps.reportActions, this.props.reportActions)) {
             this.mostRecentIOUReportActionID = ReportActionsUtils.getMostRecentIOURequestActionID(nextProps.reportActions);
+            this.mostRecentSendIOUReportActionID = ReportActionsUtils.getMostRecentIOUSendRequestActionID(nextProps.reportActions);
             return true;
         }
 
@@ -354,6 +356,7 @@ class ReportActionsView extends React.Component {
                     onLayout={this.recordTimeToMeasureItemLayout}
                     sortedReportActions={this.props.reportActions}
                     mostRecentIOUReportActionID={this.mostRecentIOUReportActionID}
+                    mostRecentSendIOUReportActionID={this.mostRecentSendIOUReportActionID}
                     isLoadingMoreReportActions={this.props.report.isLoadingMoreReportActions}
                     loadMoreChats={this.loadMoreChats}
                     newMarkerReportActionID={this.state.newMarkerReportActionID}

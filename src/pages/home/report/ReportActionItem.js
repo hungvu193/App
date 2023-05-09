@@ -114,6 +114,7 @@ class ReportActionItem extends Component {
         return this.props.displayAsGroup !== nextProps.displayAsGroup
             || this.props.draftMessage !== nextProps.draftMessage
             || this.props.isMostRecentIOUReportAction !== nextProps.isMostRecentIOUReportAction
+            || this.props.isMostRecentIOUSendReportAction !== nextProps.isMostRecentIOUSendReportAction
             || this.props.hasOutstandingIOU !== nextProps.hasOutstandingIOU
             || this.props.shouldDisplayNewMarker !== nextProps.shouldDisplayNewMarker
             || !_.isEqual(this.props.action, nextProps.action)
@@ -188,6 +189,7 @@ class ReportActionItem extends Component {
                     requestReportID={iouReportID}
                     action={this.props.action}
                     isMostRecentIOUReportAction={this.props.isMostRecentIOUReportAction}
+                    isMostRecentIOUSendReportAction={this.props.isMostRecentIOUSendReportAction}
                     isHovered={hovered}
                     contextMenuAnchor={this.popoverAnchor}
                     checkIfContextMenuActive={this.checkIfContextMenuActive}

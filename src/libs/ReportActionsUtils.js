@@ -94,6 +94,24 @@ function getMostRecentIOURequestActionID(reportActions) {
 }
 
 /**
+ * Finds most recent IOU request action ID.
+ *
+ * @param {Array} reportActions
+ * @returns {String}
+ */
+function getMostRecentIOUSendRequestActionID(reportActions) {
+    const iouRequestTypes = [CONST.IOU.REPORT_ACTION_TYPE.PAY];
+    const iouRequestActions = _.filter(reportActions, action => iouRequestTypes.includes(lodashGet(action, 'originalMessage.type')));
+
+    if (_.isEmpty(iouRequestActions)) {
+        return null;
+    }
+
+    const sortedReportActions = getSortedReportActions(iouRequestActions);
+    return _.last(sortedReportActions).reportActionID;
+}
+
+/**
  * Returns true when the report action immediately before the specified index is a comment made by the same actor who who is leaving a comment in the action at the specified index.
  * Also checks to ensure that the comment is not too old to be shown as a grouped comment.
  *
@@ -301,4 +319,5 @@ export {
     getLastClosedReportAction,
     getLatestReportActionFromOnyxData,
     getLinkedTransactionID,
+    getMostRecentIOUSendRequestActionID,
 };

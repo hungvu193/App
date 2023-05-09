@@ -105,6 +105,7 @@ const ReportActionsList = (props) => {
     const newMarkerReportActionID = props.newMarkerReportActionID;
     const sortedReportActions = props.sortedReportActions;
     const mostRecentIOUReportActionID = props.mostRecentIOUReportActionID;
+    const mostRecentIOUSendReportActionId = props.mostRecentSendIOUReportActionID;
 
     /**
      * @param {Object} args
@@ -125,11 +126,12 @@ const ReportActionsList = (props) => {
                 shouldDisplayNewMarker={shouldDisplayNewMarker}
                 shouldShowSubscriptAvatar={ReportUtils.isPolicyExpenseChat(report) && reportAction.actionName === CONST.REPORT.ACTIONS.TYPE.IOU}
                 isMostRecentIOUReportAction={reportAction.reportActionID === mostRecentIOUReportActionID}
+                isMostRecentIOUSendReportAction={reportAction.reportActionID === mostRecentIOUSendReportActionId}
                 hasOutstandingIOU={hasOutstandingIOU}
                 index={index}
             />
         );
-    }, [report, hasOutstandingIOU, newMarkerReportActionID, sortedReportActions, mostRecentIOUReportActionID]);
+    }, [report, hasOutstandingIOU, newMarkerReportActionID, sortedReportActions, mostRecentIOUReportActionID, mostRecentIOUSendReportActionId]);
 
     // Native mobile does not render updates flatlist the changes even though component did update called.
     // To notify there something changes we can use extraData prop to flatlist

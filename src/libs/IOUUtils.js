@@ -66,17 +66,17 @@ function updateIOUOwnerAndTotal(iouReport, actorEmail, amount, currency, type = 
  *
  * @param {Array} reportActions
  * @param {Object} iouReport
- * @param {String} type - iouReportAction type. Can be oneOf(create, delete, pay, split)
+ * @param {Array} types - iouReportAction type. Can be oneOf(create, delete, pay, split)
  * @param {String} pendingAction
  * @param {Boolean} filterRequestsInDifferentCurrency
  *
  * @returns {Array}
  */
-function getIOUReportActions(reportActions, iouReport, type = '', pendingAction = '', filterRequestsInDifferentCurrency = false) {
+function getIOUReportActions(reportActions, iouReport, types = [], pendingAction = '', filterRequestsInDifferentCurrency = false) {
     return _.chain(reportActions)
         .filter(action => action.originalMessage
             && action.actionName === CONST.REPORT.ACTIONS.TYPE.IOU
-            && (!_.isEmpty(type) ? action.originalMessage.type === type : true))
+            && (!_.isEmpty(types) ? types.includes(action.originalMessage.type) : true))
         .filter(action => action.originalMessage.IOUReportID.toString() === iouReport.reportID.toString())
         .filter(action => (!_.isEmpty(pendingAction) ? action.pendingAction === pendingAction : true))
         .filter(action => (filterRequestsInDifferentCurrency ? action.originalMessage.currency !== iouReport.currency : true))
@@ -97,7 +97,7 @@ function isIOUReportPendingCurrencyConversion(reportActions, iouReport) {
     const pendingRequestsInDifferentCurrency = _.chain(getIOUReportActions(
         reportActions,
         iouReport,
-        CONST.IOU.REPORT_ACTION_TYPE.CREATE,
+        [CONST.IOU.REPORT_ACTION_TYPE.CREATE, CONST.IOU.REPORT_ACTION_TYPE.PAY],
         CONST.RED_BRICK_ROAD_PENDING_ACTION.ADD,
         true,
     )).map(action => action.originalMessage.IOUTransactionID)
@@ -108,7 +108,7 @@ function isIOUReportPendingCurrencyConversion(reportActions, iouReport) {
     const pendingDeletedRequestsInDifferentCurrency = _.chain(getIOUReportActions(
         reportActions,
         iouReport,
-        CONST.IOU.REPORT_ACTION_TYPE.DELETE,
+        [CONST.IOU.REPORT_ACTION_TYPE.DELETE],
         CONST.RED_BRICK_ROAD_PENDING_ACTION.ADD,
         true,
     )).map(action => action.originalMessage.IOUTransactionID)
