@@ -10,6 +10,7 @@ const [withNetwork, NetworkProvider, NetworkContext] = createOnyxContext(ONYXKEY
 const [withPersonalDetails, PersonalDetailsProvider] = createOnyxContext(ONYXKEYS.PERSONAL_DETAILS);
 const [withCurrentDate, CurrentDateProvider] = createOnyxContext(ONYXKEYS.CURRENT_DATE);
 const [withReportActionsDrafts, ReportActionsDraftsProvider] = createOnyxContext(ONYXKEYS.COLLECTION.REPORT_ACTIONS_DRAFTS);
+const [withReportActionsHidden, ReportActionsHiddenProvider] = createOnyxContext(ONYXKEYS.COLLECTION.REPORT_ACTIONS_HIDDEN);
 const [withBlockedFromConcierge, BlockedFromConciergeProvider] = createOnyxContext(ONYXKEYS.NVP_BLOCKED_FROM_CONCIERGE);
 const [withBetas, BetasProvider] = createOnyxContext(ONYXKEYS.BETAS);
 
@@ -19,7 +20,7 @@ const propTypes = {
 };
 
 const OnyxProvider = (props) => (
-    <ComposeProviders components={[NetworkProvider, PersonalDetailsProvider, ReportActionsDraftsProvider, CurrentDateProvider, BlockedFromConciergeProvider, BetasProvider]}>
+    <ComposeProviders components={[NetworkProvider, PersonalDetailsProvider, ReportActionsDraftsProvider, CurrentDateProvider, BlockedFromConciergeProvider, BetasProvider, ReportActionsHiddenProvider]}>
         {props.children}
     </ComposeProviders>
 );
@@ -29,4 +30,4 @@ OnyxProvider.propTypes = propTypes;
 
 export default OnyxProvider;
 
-export {withNetwork, withPersonalDetails, withReportActionsDrafts, withCurrentDate, withBlockedFromConcierge, withBetas, NetworkContext};
+export {withNetwork, withPersonalDetails, withReportActionsDrafts, withCurrentDate, withBlockedFromConcierge, withBetas, NetworkContext, withReportActionsHidden};

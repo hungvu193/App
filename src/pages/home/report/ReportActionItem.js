@@ -26,7 +26,7 @@ import * as DeviceCapabilities from '../../../libs/DeviceCapabilities';
 import MiniReportActionContextMenu from './ContextMenu/MiniReportActionContextMenu';
 import * as ReportActionContextMenu from './ContextMenu/ReportActionContextMenu';
 import * as ContextMenuActions from './ContextMenu/ContextMenuActions';
-import {withBlockedFromConcierge, withNetwork, withPersonalDetails, withReportActionsDrafts} from '../../../components/OnyxProvider';
+import {withBlockedFromConcierge, withNetwork, withPersonalDetails, withReportActionsDrafts, withReportActionsHidden} from '../../../components/OnyxProvider';
 import RenameAction from '../../../components/ReportActionItem/RenameAction';
 import InlineSystemMessage from '../../../components/InlineSystemMessage';
 import styles from '../../../styles/styles';
@@ -103,10 +103,11 @@ const defaultProps = {
 
 function ReportActionItem(props) {
     const [isContextMenuActive, setIsContextMenuActive] = useState(ReportActionContextMenu.isActiveReportAction(props.action.reportActionID));
-    const [isHidden, setIsHidden] = useState(false);
     const [moderationDecision, setModerationDecision] = useState(CONST.MODERATION.MODERATOR_DECISION_APPROVED);
     const textInputRef = useRef();
     const popoverAnchorRef = useRef();
+
+    const moderationDecisions = props.action.message[0].moderationDecisions
 
     const isDraftEmpty = !props.draftMessage;
     useEffect(() => {
@@ -120,21 +121,26 @@ function ReportActionItem(props) {
     // Hide the message if it is being moderated for a higher offense, or is hidden by a moderator
     // Removed messages should not be shown anyway and should not need this flow
     useEffect(() => {
-        if (!props.action.actionName === CONST.REPORT.ACTIONS.TYPE.ADDCOMMENT || _.isEmpty(props.action.message[0].moderationDecisions)) {
+        if (!props.action.actionName === CONST.REPORT.ACTIONS.TYPE.ADDCOMMENT || _.isEmpty(moderationDecisions)) {
             return;
         }
+        // console.log('props.action', props.action)
+
+        // console.log('props.action.actionName', props.action.actionName)
+
 
         // Right now we are only sending the latest moderationDecision to the frontend even though it is an array
-        let decisions = props.action.message[0].moderationDecisions;
+        let decisions = moderationDecisions;
         if (decisions.length > 1) {
             decisions = decisions.slice(-1);
         }
         const latestDecision = decisions[0];
-        if (latestDecision.decision === CONST.MODERATION.MODERATOR_DECISION_PENDING_HIDE || latestDecision.decision === CONST.MODERATION.MODERATOR_DECISION_HIDDEN) {
-            setIsHidden(true);
-        }
+        console.log('latestDecision', latestDecision)
+        // if ((latestDecision.decision === CONST.MODERATION.MODERATOR_DECISION_PENDING_HIDE || latestDecision.decision === CONST.MODERATION.MODERATOR_DECISION_HIDDEN) && !props.action.message[0].isEdited) {
+        //     setIsHidden(true);
+        // }
         setModerationDecision(latestDecision.decision);
-    }, [props.action.message, props.action.actionName]);
+    }, [props.action.actionName, moderationDecisions, props.action.message]);
 
     const toggleContextMenuFromActiveReportAction = useCallback(() => {
         setIsContextMenuActive(ReportActionContextMenu.isActiveReportAction(props.action.reportActionID));
@@ -259,7 +265,7 @@ function ReportActionItem(props) {
                         <View style={props.displayAsGroup && hasBeenFlagged ? styles.blockquote : {}}>
                             <ReportActionItemMessage
                                 action={props.action}
-                                isHidden={isHidden}
+                                isHidden={props.isHiddenMessage}
                                 style={[
                                     !props.displayAsGroup && isAttachment ? styles.mt2 : undefined,
                                     _.contains([..._.values(CONST.REPORT.ACTIONS.TYPE.POLICYCHANGELOG), CONST.REPORT.ACTIONS.TYPE.IOU], props.action.actionName)
@@ -271,13 +277,13 @@ function ReportActionItem(props) {
                                 <Button
                                     small
                                     style={[styles.mt2, styles.alignSelfStart]}
-                                    onPress={() => setIsHidden(!isHidden)}
+                                    onPress={() => Report.saveReportActionHidden(props.report.reportID, props.action.reportActionID, !props.isHiddenMessage)}
                                 >
                                     <Text
                                         style={styles.buttonSmallText}
                                         selectable={false}
                                     >
-                                        {isHidden ? props.translate('moderation.revealMessage') : props.translate('moderation.hideMessage')}
+                                        {props.isHiddenMessage ? props.translate('moderation.revealMessage') : props.translate('moderation.hideMessage')}
                                     </Text>
                                 </Button>
                             )}
@@ -301,13 +307,13 @@ function ReportActionItem(props) {
                         <Button
                             small
                             style={[styles.mt2, styles.alignSelfStart]}
-                            onPress={() => setIsHidden(!isHidden)}
+                            onPress={() =>Report.saveReportActionHidden(props.report.reportID, props.action.reportActionID, !props.isHiddenMessage)}
                         >
                             <Text
                                 style={styles.buttonSmallText}
                                 selectable={false}
                             >
-                                {isHidden ? 'Reveal message' : 'Hide message'}
+                                {props.isHiddenMessage ? 'Reveal message' : 'Hide message'}
                             </Text>
                         </Button>
                     )}
@@ -506,12 +512,20 @@ export default compose(
             key: ONYXKEYS.PREFERRED_EMOJI_SKIN_TONE,
         },
     }),
+    withReportActionsHidden({
+        propName: 'isHiddenMessage',
+        transformValue: (isHiddens, props) => {
+            const hiddenKey = `${ONYXKEYS.COLLECTION.REPORT_ACTIONS_HIDDEN}${props.report.reportID}_${props.action.reportActionID}`;
+            return lodashGet(isHiddens, hiddenKey, '');
+        },
+    })
 )(
     memo(
         ReportActionItem,
         (prevProps, nextProps) =>
             prevProps.displayAsGroup === nextProps.displayAsGroup &&
             prevProps.draftMessage === nextProps.draftMessage &&
+            prevProps.isHiddenMessage === nextProps.isHiddenMessage &&
             prevProps.isMostRecentIOUReportAction === nextProps.isMostRecentIOUReportAction &&
             prevProps.hasOutstandingIOU === nextProps.hasOutstandingIOU &&
             prevProps.shouldDisplayNewMarker === nextProps.shouldDisplayNewMarker &&

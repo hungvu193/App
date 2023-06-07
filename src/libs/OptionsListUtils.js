@@ -573,8 +573,9 @@ function getOptions(
     let recentReportOptions = [];
     let personalDetailsOptions = [];
     const reportMapForLogins = {};
-    const parsedPhoneNumber = parsePhoneNumber(LoginUtils.appendCountryCode(searchInputValue));
+    const parsedPhoneNumber = parsePhoneNumber(searchInputValue);
     const searchValue = parsedPhoneNumber.possible ? parsedPhoneNumber.number.e164 : searchInputValue;
+    console.log('searchValue', searchValue)
 
     // Filter out all the reports that shouldn't be displayed
     const filteredReports = _.filter(reports, (report) =>
@@ -648,9 +649,32 @@ function getOptions(
         // PersonalDetails should be ordered Alphabetically by default - https://github.com/Expensify/App/issues/8220#issuecomment-1104009435
         allPersonalDetailsOptions = lodashOrderBy(allPersonalDetailsOptions, [(personalDetail) => personalDetail.text && personalDetail.text.toLowerCase()], 'asc');
     }
+    const currentUser = LocalePhoneNumber.formatPhoneNumber(currentUserLogin)
+    // const userHasPhonePrimaryEmail = Str.endsWith(currentUserLogin, CONST.SMS.DOMAIN);
+    // const parsedPhoneNumberEx = parsePhoneNumber(LoginUtils.appendCountryCode(currentUserLogin));
+    // console.log('parsedPhoneNumber', parsedPhoneNumberEx.number.e164)
+    const phoneNumberWithoutDomain = currentUser.replace(/ /g,'');
+  
 
     // Always exclude already selected options and the currently logged in user
     const loginOptionsToExclude = [...selectedOptions, {login: currentUserLogin}];
+
+    loginOptionsToExclude.push({
+        login: `${phoneNumberWithoutDomain}${CONST.SMS.DOMAIN}`
+    })
+
+    loginOptionsToExclude.push({
+        login: `${phoneNumberWithoutDomain.slice(1)}${CONST.SMS.DOMAIN}`
+    })
+
+    loginOptionsToExclude.push({
+        login: `${LoginUtils.appendCountryCode(phoneNumberWithoutDomain)}${CONST.SMS.DOMAIN}`
+    })
+
+    // LoginUtils.appendCountryCode
+
+    console.log('loginOptionsToExclude', loginOptionsToExclude)
+
 
     _.each(excludeLogins, (login) => {
         loginOptionsToExclude.push({login});
@@ -717,6 +741,7 @@ function getOptions(
     let userToInvite = null;
     const noOptions = recentReportOptions.length + personalDetailsOptions.length === 0 && !currentUserOption;
     const noOptionsMatchExactly = !_.find(personalDetailsOptions.concat(recentReportOptions), (option) => option.login === searchValue.toLowerCase());
+    console.log('addSMSDomainIfPhoneNumber(searchValue).toLowerCase()', addSMSDomainIfPhoneNumber(searchValue).toLowerCase())
 
     if (
         searchValue &&

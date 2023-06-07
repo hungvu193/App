@@ -1038,6 +1038,10 @@ function saveReportActionDraft(reportID, reportActionID, draftMessage) {
     Onyx.set(`${ONYXKEYS.COLLECTION.REPORT_ACTIONS_DRAFTS}${reportID}_${reportActionID}`, draftMessage);
 }
 
+function saveReportActionHidden(reportID, reportActionID, isHidden) {
+    Onyx.set(`${ONYXKEYS.COLLECTION.REPORT_ACTIONS_HIDDEN}${reportID}_${reportActionID}`, isHidden);
+}
+
 /**
  * Saves the number of lines for the report action draft
  * @param {String} reportID
@@ -1807,4 +1811,5 @@ export {
     leaveRoom,
     setLastOpenedPublicRoom,
     flagComment,
+    saveReportActionHidden
 };
