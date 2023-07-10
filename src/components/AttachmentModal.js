@@ -184,25 +184,28 @@ function AttachmentModal(props) {
         (_file) => {
             const {fileExtension} = FileUtils.splitExtensionFromFileName(lodashGet(_file, 'name', ''));
             if (_.contains(CONST.API_ATTACHMENT_VALIDATIONS.UNALLOWED_EXTENSIONS, fileExtension.toLowerCase())) {
-                const invalidReason = props.translate('attachmentPicker.notAllowedExtension');
+                const invalidReason = 'attachmentPicker.notAllowedExtension';
 
-                setIsAttachmentInvalid(true);
-                setAttachmentInvalidReasonTitle(props.translate('attachmentPicker.wrongFileType'));
+             
+                setAttachmentInvalidReasonTitle('attachmentPicker.wrongFileType');
                 setAttachmentInvalidReason(invalidReason);
+                setIsAttachmentInvalid(true);
                 return false;
             }
 
             if (lodashGet(_file, 'size', 0) > CONST.API_ATTACHMENT_VALIDATIONS.MAX_SIZE) {
+              
+                setAttachmentInvalidReasonTitle('attachmentPicker.attachmentTooLarge');
+                setAttachmentInvalidReason('attachmentPicker.sizeExceeded');
                 setIsAttachmentInvalid(true);
-                setAttachmentInvalidReasonTitle(props.translate('attachmentPicker.attachmentTooLarge'));
-                setAttachmentInvalidReason(props.translate('attachmentPicker.sizeExceeded'));
                 return false;
             }
 
             if (lodashGet(_file, 'size', 0) < CONST.API_ATTACHMENT_VALIDATIONS.MIN_SIZE) {
+              
+                setAttachmentInvalidReasonTitle('attachmentPicker.attachmentTooSmall');
+                setAttachmentInvalidReason('attachmentPicker.sizeNotMet');
                 setIsAttachmentInvalid(true);
-                setAttachmentInvalidReasonTitle(props.translate('attachmentPicker.attachmentTooSmall'));
-                setAttachmentInvalidReason(props.translate('attachmentPicker.sizeNotMet'));
                 return false;
             }
 
@@ -350,11 +353,11 @@ function AttachmentModal(props) {
             </Modal>
 
             <ConfirmModal
-                title={attachmentInvalidReasonTitle}
+                title={attachmentInvalidReasonTitle ? props.translate(attachmentInvalidReasonTitle) : ''}
                 onConfirm={closeConfirmModal}
                 onCancel={closeConfirmModal}
                 isVisible={isAttachmentInvalid}
-                prompt={attachmentInvalidReason}
+                prompt={attachmentInvalidReason ? props.translate(attachmentInvalidReason) : ''}
                 confirmText={props.translate('common.close')}
                 shouldShowCancelButton={false}
             />
