@@ -185,8 +185,6 @@ function AttachmentModal(props) {
             const {fileExtension} = FileUtils.splitExtensionFromFileName(lodashGet(_file, 'name', ''));
             if (_.contains(CONST.API_ATTACHMENT_VALIDATIONS.UNALLOWED_EXTENSIONS, fileExtension.toLowerCase())) {
                 const invalidReason = 'attachmentPicker.notAllowedExtension';
-
-             
                 setAttachmentInvalidReasonTitle('attachmentPicker.wrongFileType');
                 setAttachmentInvalidReason(invalidReason);
                 setIsAttachmentInvalid(true);
@@ -194,7 +192,6 @@ function AttachmentModal(props) {
             }
 
             if (lodashGet(_file, 'size', 0) > CONST.API_ATTACHMENT_VALIDATIONS.MAX_SIZE) {
-              
                 setAttachmentInvalidReasonTitle('attachmentPicker.attachmentTooLarge');
                 setAttachmentInvalidReason('attachmentPicker.sizeExceeded');
                 setIsAttachmentInvalid(true);
@@ -202,7 +199,6 @@ function AttachmentModal(props) {
             }
 
             if (lodashGet(_file, 'size', 0) < CONST.API_ATTACHMENT_VALIDATIONS.MIN_SIZE) {
-              
                 setAttachmentInvalidReasonTitle('attachmentPicker.attachmentTooSmall');
                 setAttachmentInvalidReason('attachmentPicker.sizeNotMet');
                 setIsAttachmentInvalid(true);
