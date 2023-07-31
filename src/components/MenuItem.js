@@ -164,6 +164,7 @@ const MenuItem = React.forwardRef((props, ref) => {
                                                     src={props.icon}
                                                     width={props.iconWidth}
                                                     height={props.iconHeight}
+                                                    isHovered={isHovered}
                                                     fill={
                                                         props.iconFill ||
                                                         StyleUtils.getIconFillColor(

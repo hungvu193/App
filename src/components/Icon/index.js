@@ -58,6 +58,7 @@ class Icon extends PureComponent {
                             width={width}
                             height={height}
                             fill={this.props.fill}
+                            isHovered={this.props.isHovered}
                         />
                     </View>
                 </View>
@@ -73,6 +74,7 @@ class Icon extends PureComponent {
                     width={width}
                     height={height}
                     fill={this.props.fill}
+                    isHovered={this.props.isHovered}
                 />
             </View>
         );

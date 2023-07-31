@@ -24,6 +24,7 @@ import ONYXKEYS from '../../../ONYXKEYS';
 import withWindowDimensions, {windowDimensionsPropTypes} from '../../../components/withWindowDimensions';
 import userPropTypes from '../userPropTypes';
 import * as App from '../../../libs/actions/App';
+import LoungAccessIcon from '../../../../assets/images/LoungAccessIcon';
 
 const propTypes = {
     /* Onyx Props */
@@ -127,10 +128,10 @@ function ProfilePage(props) {
                     onPress={() => Navigation.navigate(ROUTES.SETTINGS_PERSONAL_DETAILS)}
                     shouldShowRightIcon
                 />
-                {props.user.hasLoungeAccess && (
+                {true && (
                     <MenuItem
                         title={props.translate('loungeAccessPage.loungeAccess')}
-                        icon={Expensicons.LoungeAccess}
+                        icon={LoungAccessIcon}
                         iconWidth={40}
                         iconHeight={40}
                         onPress={() => Navigation.navigate(ROUTES.SETTINGS_LOUNGE_ACCESS)}
