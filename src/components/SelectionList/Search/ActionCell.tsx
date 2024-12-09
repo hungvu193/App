@@ -3,14 +3,18 @@ import {View} from 'react-native';
 import Badge from '@components/Badge';
 import Button from '@components/Button';
 import * as Expensicons from '@components/Icon/Expensicons';
+import type {TransactionListItemType} from '@components/SelectionList/types';
+import SettlementButton from '@components/SettlementButton';
 import useLocalize from '@hooks/useLocalize';
 import useNetwork from '@hooks/useNetwork';
 import useStyleUtils from '@hooks/useStyleUtils';
 import useTheme from '@hooks/useTheme';
 import useThemeStyles from '@hooks/useThemeStyles';
+import * as ReportUtils from '@libs/ReportUtils';
 import variables from '@styles/variables';
 import CONST from '@src/CONST';
 import type {TranslationPaths} from '@src/languages/types';
+import ROUTES from '@src/ROUTES';
 import type {SearchTransactionAction} from '@src/types/onyx/SearchResults';
 
 const actionTranslationsMap: Record<SearchTransactionAction, TranslationPaths> = {
@@ -31,6 +35,7 @@ type ActionCellProps = {
     isChildListItem?: boolean;
     parentAction?: string;
     isLoading?: boolean;
+    item: TransactionListItemType;
 };
 
 function ActionCell({
@@ -41,7 +46,10 @@ function ActionCell({
     isChildListItem = false,
     parentAction = '',
     isLoading = false,
+    item,
 }: ActionCellProps) {
+    const bankAccountRoute = ReportUtils.getBankAccountRoute(item);
+
     const {translate} = useLocalize();
     const theme = useTheme();
     const styles = useThemeStyles();
@@ -88,6 +96,28 @@ function ActionCell({
                 shouldUseDefaultHover={!isChildListItem}
             />
         ) : null;
+    }
+
+    if (action === CONST.SEARCH.ACTION_TYPES.PAY) {
+        return (
+            <SettlementButton
+                onPress={goToItem}
+                currency={item?.currency}
+                policyID={item?.policyID}
+                iouReport={item}
+                enablePaymentsRoute={ROUTES.ENABLE_PAYMENTS}
+                addBankAccountRoute={bankAccountRoute}
+                style={[styles.pv2]}
+                kycWallAnchorAlignment={{
+                    horizontal: CONST.MODAL.ANCHOR_ORIGIN_HORIZONTAL.LEFT,
+                    vertical: CONST.MODAL.ANCHOR_ORIGIN_VERTICAL.BOTTOM,
+                }}
+                paymentMethodDropdownAnchorAlignment={{
+                    horizontal: CONST.MODAL.ANCHOR_ORIGIN_HORIZONTAL.RIGHT,
+                    vertical: CONST.MODAL.ANCHOR_ORIGIN_VERTICAL.BOTTOM,
+                }}
+            />
+        );
     }
 
     const buttonInnerStyles = isSelected ? styles.buttonSuccessHovered : {};

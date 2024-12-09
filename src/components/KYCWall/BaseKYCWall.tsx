@@ -133,7 +133,7 @@ function KYCWall({
      *
      */
     const continueAction = useCallback(
-        (event?: GestureResponderEvent | KeyboardEvent, iouPaymentType?: PaymentMethodType) => {
+        (event?: GestureResponderEvent | KeyboardEvent, iouPaymentType?: PaymentMethodType, paymentMethod?: PaymentMethod) => {
             const currentSource = walletTerms?.source ?? source;
 
             /**
@@ -169,6 +169,12 @@ function KYCWall({
 
                 const clickedElementLocation = getClickedTargetLocation(targetElement as HTMLDivElement);
                 const position = getAnchorPosition(clickedElementLocation);
+
+                if (paymentMethod) {
+                    setShouldShowAddPaymentMenu(false);
+                    selectPaymentMethod(paymentMethod);
+                    return;
+                }
 
                 setPositionAddPaymentMenu(position);
                 setShouldShowAddPaymentMenu(true);

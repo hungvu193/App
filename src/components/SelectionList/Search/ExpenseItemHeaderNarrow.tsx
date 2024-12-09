@@ -46,6 +46,7 @@ function ExpenseItemHeaderNarrow({
     handleCheckboxPress,
     text,
     isLoading = false,
+    item,
 }: ExpenseItemHeaderNarrowProps) {
     const styles = useThemeStyles();
     const StyleUtils = useStyleUtils();
@@ -98,13 +99,14 @@ function ExpenseItemHeaderNarrow({
                     />
                 </View>
             </View>
-            <View style={[StyleUtils.getWidthStyle(variables.w80)]}>
+            <View style={[StyleUtils.getWidthStyle(variables.w184)]}>
                 <ActionCell
                     action={action}
                     goToItem={onButtonPress}
                     isLargeScreenWidth={false}
                     isSelected={isSelected}
                     isLoading={isLoading}
+                    item={item}
                 />
             </View>
         </View>
