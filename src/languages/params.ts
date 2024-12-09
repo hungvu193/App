@@ -116,7 +116,7 @@ type RequestCountParams = {
 };
 
 type SettleExpensifyCardParams = {
-    formattedAmount: string;
+    formattedAmount?: string;
 };
 
 type RequestAmountParams = {amount: string};

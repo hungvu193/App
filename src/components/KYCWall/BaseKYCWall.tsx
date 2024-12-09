@@ -20,6 +20,7 @@ import ROUTES from '@src/ROUTES';
 import type {PaymentMethodType} from '@src/types/onyx/OriginalMessage';
 import viewRef from '@src/types/utils/viewRef';
 import type {AnchorPosition, DomRect, KYCWallProps, PaymentMethod} from './types';
+import { isEmptyObject } from "@src/types/utils/EmptyObject";
 
 // This sets the Horizontal anchor position offset for POPOVER MENU.
 const POPOVER_MENU_ANCHOR_POSITION_HORIZONTAL_OFFSET = 20;
@@ -50,6 +51,7 @@ function KYCWall({
     const [fundList] = useOnyx(ONYXKEYS.FUND_LIST);
     const [bankAccountList = {}] = useOnyx(ONYXKEYS.BANK_ACCOUNT_LIST);
     const [reimbursementAccount] = useOnyx(ONYXKEYS.REIMBURSEMENT_ACCOUNT);
+    const [policies] = useOnyx(ONYXKEYS.COLLECTION.POLICY);
 
     const anchorRef = useRef<HTMLDivElement | View>(null);
     const transferBalanceButtonRef = useRef<HTMLDivElement | View | null>(null);
@@ -133,7 +135,7 @@ function KYCWall({
      *
      */
     const continueAction = useCallback(
-        (event?: GestureResponderEvent | KeyboardEvent, iouPaymentType?: PaymentMethodType) => {
+        (event?: GestureResponderEvent | KeyboardEvent, iouPaymentType?: PaymentMethodType, paymentMethod?: PaymentMethod) => {
             const currentSource = walletTerms?.source ?? source;
 
             /**
@@ -169,6 +171,12 @@ function KYCWall({
 
                 const clickedElementLocation = getClickedTargetLocation(targetElement as HTMLDivElement);
                 const position = getAnchorPosition(clickedElementLocation);
+
+                if(paymentMethod) {
+                    setShouldShowAddPaymentMenu(false);
+                    selectPaymentMethod(paymentMethod);
+                    return;
+                }
 
                 setPositionAddPaymentMenu(position);
                 setShouldShowAddPaymentMenu(true);
