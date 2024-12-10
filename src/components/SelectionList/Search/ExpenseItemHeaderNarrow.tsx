@@ -99,7 +99,7 @@ function ExpenseItemHeaderNarrow({
                     />
                 </View>
             </View>
-            <View style={[StyleUtils.getWidthStyle(variables.w184)]}>
+            <View style={[StyleUtils.getWidthStyle(variables.w80)]}>
                 <ActionCell
                     action={action}
                     goToItem={onButtonPress}

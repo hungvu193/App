@@ -250,7 +250,7 @@ function SettlementButton({
                     onOptionsMenuHide={onPaymentOptionsHide}
                     buttonRef={buttonRef}
                     shouldAlwaysShowDropdownMenu={isInvoiceReport}
-                    customText={isInvoiceReport || !hasPreferredMethod ? translate('iou.settlePayment', {formattedAmount}) : undefined}
+                    customText={translate('iou.settlePayment', {formattedAmount})}
                     menuHeaderText={isInvoiceReport ? translate('workspace.invoices.paymentMethods.chooseInvoiceMethod') : undefined}
                     isSplitButton={!isInvoiceReport && hasPreferredMethod}
                     isDisabled={isDisabled}

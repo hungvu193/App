@@ -105,9 +105,9 @@ function ActionCell({
                 currency={item?.currency}
                 policyID={item?.policyID}
                 iouReport={item}
+                buttonSize={CONST.DROPDOWN_BUTTON_SIZE.SMALL}
                 enablePaymentsRoute={ROUTES.ENABLE_PAYMENTS}
                 addBankAccountRoute={bankAccountRoute}
-                style={[styles.pv2]}
                 kycWallAnchorAlignment={{
                     horizontal: CONST.MODAL.ANCHOR_ORIGIN_HORIZONTAL.LEFT,
                     vertical: CONST.MODAL.ANCHOR_ORIGIN_VERTICAL.BOTTOM,
