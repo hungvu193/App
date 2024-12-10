@@ -49,7 +49,6 @@ function ActionCell({
     item,
 }: ActionCellProps) {
     const bankAccountRoute = ReportUtils.getBankAccountRoute(item);
-
     const {translate} = useLocalize();
     const theme = useTheme();
     const styles = useThemeStyles();
@@ -104,7 +103,6 @@ function ActionCell({
                 onPress={goToItem}
                 currency={item?.currency}
                 policyID={item?.policyID}
-                iouReport={item}
                 buttonSize={CONST.DROPDOWN_BUTTON_SIZE.SMALL}
                 enablePaymentsRoute={ROUTES.ENABLE_PAYMENTS}
                 addBankAccountRoute={bankAccountRoute}

@@ -450,6 +450,7 @@ function TransactionListItemRow({
                         parentAction={parentAction}
                         goToItem={onButtonPress}
                         isLoading={isLoading}
+                        item={item}
                     />
                 </View>
             </View>
