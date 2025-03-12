@@ -1,3 +1,4 @@
+import isEmpty from 'lodash/isEmpty';
 import truncate from 'lodash/truncate';
 import React, {useMemo} from 'react';
 import type {GestureResponderEvent} from 'react-native';
@@ -33,7 +34,6 @@ import type {PaymentMethodType} from '@src/types/onyx/OriginalMessage';
 import {isEmptyObject} from '@src/types/utils/EmptyObject';
 import isLoadingOnyxValue from '@src/types/utils/isLoadingOnyxValue';
 import type SettlementButtonProps from './types';
-import isEmpty from "lodash/isEmpty";
 
 type KYCFlowEvent = GestureResponderEvent | KeyboardEvent | undefined;
 
