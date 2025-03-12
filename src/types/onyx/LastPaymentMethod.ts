@@ -5,11 +5,11 @@ type LastPaymentMethodType = {
     /** The default last payment method */
     lastUsed: string;
     /** The lastPaymentMethod of an IOU */
-    iou: string;
+    Iou: string;
     /** The lastPaymentMethod of an Expense */
-    expense: string;
+    Expense: string;
     /** The lastPaymentMethod of an Invoice */
-    invoice: string;
+    Invoice: string;
 };
 
 /** Record of last payment methods, indexed by policy id */
