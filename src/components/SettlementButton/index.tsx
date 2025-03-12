@@ -114,7 +114,7 @@ function SettlementButton({
             text: formattedPaymentMethod?.title ?? '',
             description: formattedPaymentMethod?.description ?? '',
             icon: formattedPaymentMethod?.icon,
-            onSelected: () => onPress(CONST.IOU.PAYMENT_TYPE.EXPENSIFY, true),
+            onSelected: () => onPress(CONST.IOU.PAYMENT_TYPE.EXPENSIFY, true, undefined),
             value: formattedPaymentMethod?.methodID,
         }));
     }
@@ -208,7 +208,7 @@ function SettlementButton({
                             text: translate('iou.payElsewhere', {formattedAmount: ''}),
                             icon: Expensicons.Cash,
                             value: CONST.IOU.PAYMENT_TYPE.ELSEWHERE,
-                            onSelected: () => onPress(CONST.IOU.PAYMENT_TYPE.ELSEWHERE),
+                            onSelected: () => onPress(CONST.IOU.PAYMENT_TYPE.ELSEWHERE, undefined, undefined),
                         },
                     ],
                 });
@@ -224,7 +224,7 @@ function SettlementButton({
                         text: translate('iou.payElsewhere', {formattedAmount: ''}),
                         icon: Expensicons.Cash,
                         value: CONST.IOU.PAYMENT_TYPE.ELSEWHERE,
-                        onSelected: () => onPress(CONST.IOU.PAYMENT_TYPE.ELSEWHERE, true),
+                        onSelected: () => onPress(CONST.IOU.PAYMENT_TYPE.ELSEWHERE, true, undefined),
                     },
                 ],
             });
@@ -274,7 +274,7 @@ function SettlementButton({
             return;
         }
 
-        onPress(iouPaymentType);
+        onPress(iouPaymentType, undefined, undefined);
     };
 
     const selectPaymentMethod = (event: KYCFlowEvent, triggerKYCFlow: TriggerKYCFlow, paymentMethod?: PaymentMethod, usedPolicy?: Policy) => {
@@ -339,7 +339,7 @@ function SettlementButton({
 
     return (
         <KYCWall
-            onSuccessfulKYC={(paymentType) => onPress(paymentType)}
+            onSuccessfulKYC={(paymentType) => onPress(paymentType, undefined, undefined)}
             enablePaymentsRoute={enablePaymentsRoute}
             addBankAccountRoute={addBankAccountRoute}
             addDebitCardRoute={addDebitCardRoute}
