@@ -33,6 +33,7 @@ import type {PaymentMethodType} from '@src/types/onyx/OriginalMessage';
 import {isEmptyObject} from '@src/types/utils/EmptyObject';
 import isLoadingOnyxValue from '@src/types/utils/isLoadingOnyxValue';
 import type SettlementButtonProps from './types';
+import { isEmpty } from "lodash";
 
 type KYCFlowEvent = GestureResponderEvent | KeyboardEvent | undefined;
 
@@ -168,7 +169,7 @@ function SettlementButton({
             }
         }
         if (isExpenseReport && shouldShowPaywithExpensifyOption) {
-            if (latestBankItem) {
+            if (!isEmpty(latestBankItem)) {
                 buttonOptions.push({
                     text: latestBankItem.at(0)?.text ?? '',
                     icon: latestBankItem.at(0)?.icon,
@@ -365,7 +366,10 @@ function SettlementButton({
                     defaultSelectedIndex={lastPaymentPolicy ? paymentButtonOptions.findIndex((option) => option.value === lastPaymentPolicy.id) : 0}
                     onPress={(event, iouPaymentType) => {
                         const isPaymentMethod = Object.values(CONST.PAYMENT_METHODS).includes(iouPaymentType as PaymentMethod);
-                        if (isPaymentMethod ?? lastPaymentPolicy ?? latestBankItem) {
+
+                        // whether the selected option is a payment option as opposed to PaymentMethodType (e.g. approve, expensify)
+                        // so that we can convert the payment option to PaymentMethodType and trigger KYC flow
+                        if (isPaymentMethod ?? lastPaymentPolicy ?? !isEmpty(latestBankItem)) {
                             selectPaymentMethod(event, triggerKYCFlow, iouPaymentType as PaymentMethod);
                             return;
                         }
