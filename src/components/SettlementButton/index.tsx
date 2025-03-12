@@ -33,7 +33,7 @@ import type {PaymentMethodType} from '@src/types/onyx/OriginalMessage';
 import {isEmptyObject} from '@src/types/utils/EmptyObject';
 import isLoadingOnyxValue from '@src/types/utils/isLoadingOnyxValue';
 import type SettlementButtonProps from './types';
-import { isEmpty } from "lodash";
+import isEmpty from "lodash/isEmpty";
 
 type KYCFlowEvent = GestureResponderEvent | KeyboardEvent | undefined;
 
