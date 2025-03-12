@@ -77,7 +77,7 @@ function ProcessMoneyReportHoldMenu({
             if (startAnimation) {
                 startAnimation();
             }
-            IOU.payMoneyRequest(paymentType, chatReport, moneyRequestReport, full);
+            IOU.payMoneyRequest(paymentType, chatReport, moneyRequestReport, undefined, full);
         }
         onClose();
     };

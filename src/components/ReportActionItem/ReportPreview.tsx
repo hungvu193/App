@@ -277,7 +277,7 @@ function ReportPreview({
                 if (isInvoiceReportUtils(iouReport)) {
                     payInvoice(type, chatReport, iouReport, payAsBusiness);
                 } else {
-                    payMoneyRequest(type, chatReport, iouReport, undefined, usedPolicyID);
+                    payMoneyRequest(type, chatReport, iouReport, usedPolicyID);
                 }
             }
         },
