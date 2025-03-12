@@ -51,7 +51,7 @@ function ConsolePage() {
     const styles = useThemeStyles();
     const theme = useTheme();
     const {windowWidth} = useWindowDimensions();
-    const route = useRoute<PlatformStackRouteProp<SettingsNavigatorParamList, typeof SCREENS.CONSOLE_DEBUG>>();
+    const route = useRoute<PlatformStackRouteProp<SettingsNavigatorParamList, typeof SCREENS.SETTINGS.CONSOLE>>();
     const isAuthenticated = useIsAuthenticated();
 
     const menuItems: PopoverMenuItem[] = useMemo(
