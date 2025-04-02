@@ -1,7 +1,7 @@
 import {Str} from 'expensify-common';
 import isEmpty from 'lodash/isEmpty';
 import truncate from 'lodash/truncate';
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo, useRef} from 'react';
 import type {GestureResponderEvent} from 'react-native';
 import {useOnyx} from 'react-native-onyx';
 import ButtonWithDropdownMenu from '@components/ButtonWithDropdownMenu';
@@ -107,6 +107,15 @@ function SettlementButton({
     // whether the user has single policy and the expense isn't inside a workspace
     const hasSinglePolicy = !policy && activeAdminPolicies.length === 1;
     const hasMultiplePolicies = !policy && activeAdminPolicies.length > 1;
+    const lastPaymentMethodRef = useRef(lastPaymentMethod);
+
+    useEffect(() => {
+        if (isLoadingLastPaymentMethod) {
+            return;
+        }
+        lastPaymentMethodRef.current = lastPaymentMethod;
+        // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    }, [isLoadingLastPaymentMethod]);
 
     const isInvoiceReport = (!isEmptyObject(iouReport) && isInvoiceReportUtil(iouReport)) || false;
     const shouldShowPaywithExpensifyOption = !shouldHidePaymentOptions;
@@ -276,7 +285,7 @@ function SettlementButton({
         }
 
         // Put the preferred payment method to the front of the array, so it's shown as default. We assume their last payment method is their preferred.
-        if (lastPaymentMethod) {
+        if (lastPaymentMethodRef.current) {
             return buttonOptions.sort((method) => (method.value === lastPaymentMethod ? -1 : 0));
         }
         return buttonOptions;
