@@ -22,7 +22,7 @@ type LastPaymentMethodType = {
     /** The lastPaymentMethod of an Expense */
     Expense: string;
     /** The lastPaymentMethod of an Invoice */
-    Invoice: string;
+    Invoice: string | PaymentInformation;
 };
 
 /** Record of last payment methods, indexed by policy id */
