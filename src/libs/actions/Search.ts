@@ -20,16 +20,8 @@ import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
 import FILTER_KEYS from '@src/types/form/SearchAdvancedFiltersForm';
 import type {LastPaymentMethod, LastPaymentMethodType, SearchResults} from '@src/types/onyx';
+import type {PaymentInformation} from '@src/types/onyx/LastPaymentMethod';
 import type {SearchPolicy, SearchReport, SearchTransaction} from '@src/types/onyx/SearchResults';
-import {openReport} from './Report';
-
-let currentUserEmail: string;
-Onyx.connect({
-    key: ONYXKEYS.SESSION,
-    callback: (val) => {
-        currentUserEmail = val?.email ?? '';
-    },
-});
 
 let lastPaymentMethod: OnyxEntry<LastPaymentMethod>;
 Onyx.connect({
@@ -77,6 +69,14 @@ function handleActionButtonPress(hash: number, item: TransactionListItemType | R
     }
 }
 
+function getLastPolicyBankAccountID(policyID: string | undefined, reportType: keyof LastPaymentMethodType = 'lastUsed'): number | undefined {
+    if (!policyID) {
+        return undefined;
+    }
+    const lastPolicyPaymentMethod = lastPaymentMethod?.[policyID];
+    return typeof lastPolicyPaymentMethod === 'string' ? undefined : (lastPolicyPaymentMethod?.[reportType] as PaymentInformation)?.bankAccountID;
+}
+
 function getLastPolicyPaymentMethod(
     policyID: string | undefined,
     lastPaymentMethods: OnyxEntry<LastPaymentMethod>,
@@ -87,7 +87,7 @@ function getLastPolicyPaymentMethod(
     }
 
     const lastPolicyPaymentMethod = lastPaymentMethods?.[policyID];
-    const result = typeof lastPolicyPaymentMethod === 'string' ? lastPolicyPaymentMethod : lastPolicyPaymentMethod?.[reportType];
+    const result = typeof lastPolicyPaymentMethod === 'string' ? lastPolicyPaymentMethod : (lastPolicyPaymentMethod?.[reportType] as PaymentInformation)?.name;
 
     return result as ValueOf<typeof CONST.IOU.PAYMENT_TYPE> | undefined;
 }
@@ -263,9 +263,7 @@ function search({queryJSON, offset}: {queryJSON: SearchQueryJSON; offset?: numbe
  * It's possible that we return legacy transactions that don't have a transaction thread created yet.
  * In that case, when users select the search result row, we need to create the transaction thread on the fly and update the search result with the new transactionThreadReport
  */
-function createTransactionThread(hash: number, transactionID: string, reportID: string, moneyRequestReportActionID: string) {
-    openReport(reportID, '', [currentUserEmail], undefined, moneyRequestReportActionID);
-
+function updateSearchResultsWithTransactionThreadReportID(hash: number, transactionID: string, reportID: string) {
     const onyxUpdate: Record<string, Record<string, Partial<SearchTransaction>>> = {
         data: {
             [`${ONYXKEYS.COLLECTION.TRANSACTION}${transactionID}`]: {
@@ -423,7 +421,7 @@ function clearAdvancedFilters() {
 export {
     saveSearch,
     search,
-    createTransactionThread,
+    updateSearchResultsWithTransactionThreadReportID,
     deleteMoneyRequestOnSearch,
     holdMoneyRequestOnSearch,
     unholdMoneyRequestOnSearch,
@@ -438,4 +436,5 @@ export {
     submitMoneyRequestOnSearch,
     openSearchFiltersCardPage,
     getLastPolicyPaymentMethod,
+    getLastPolicyBankAccountID,
 };

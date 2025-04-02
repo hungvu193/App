@@ -72,6 +72,12 @@ type OriginalMessageIOU = {
 
     /** Collection of accountIDs of users mentioned in message */
     whisperedTo?: number[];
+
+    /** Where the invoice is paid with business account or not */
+    payAsBusiness?: boolean;
+
+    /** The bank account id */
+    bankAccountID?: number;
 };
 
 /** Names of moderation decisions */
@@ -544,6 +550,15 @@ type OriginalMessageReimbursementDequeued = {
     currency: string;
 };
 
+/** Model of `CHANGEPOLICY` report action */
+type OriginalMessageChangePolicy = {
+    /** ID of the old policy */
+    fromPolicy: string | undefined;
+
+    /** ID of the new policy */
+    toPolicy: string;
+};
+
 /** Model of `moved` report action */
 type OriginalMessageMoved = {
     /** ID of the old policy */
@@ -729,7 +744,7 @@ type OriginalMessageMap = {
     [CONST.REPORT.ACTIONS.TYPE.ADD_COMMENT]: OriginalMessageAddComment;
     [CONST.REPORT.ACTIONS.TYPE.APPROVED]: OriginalMessageApproved;
     [CONST.REPORT.ACTIONS.TYPE.CHANGE_FIELD]: never;
-    [CONST.REPORT.ACTIONS.TYPE.CHANGE_POLICY]: never;
+    [CONST.REPORT.ACTIONS.TYPE.CHANGE_POLICY]: OriginalMessageChangePolicy;
     [CONST.REPORT.ACTIONS.TYPE.CHANGE_TYPE]: never;
     [CONST.REPORT.ACTIONS.TYPE.CHRONOS_OOO_LIST]: OriginalMessageChronosOOOList;
     [CONST.REPORT.ACTIONS.TYPE.CLOSED]: OriginalMessageClosed;
@@ -815,4 +830,5 @@ export type {
     OriginalMessageModifiedExpense,
     OriginalMessageExportIntegration,
     IssueNewCardOriginalMessage,
+    OriginalMessageChangePolicy,
 };
