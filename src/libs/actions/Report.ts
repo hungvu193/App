@@ -4973,8 +4973,9 @@ function clearDeleteTransactionNavigateBackUrl() {
  * Moves an IOU report to a policy by converting it to an expense report
  * @param reportID - The ID of the IOU report to move
  * @param policyID - The ID of the policy to move the report to
+ * @param isFromSettlementButton - Whether the action is from report preview
  */
-function moveIOUReportToPolicy(reportID: string, policyID: string) {
+function moveIOUReportToPolicy(reportID: string, policyID: string, isFromSettlementButton?: boolean) {
     const iouReport = allReports?.[`${ONYXKEYS.COLLECTION.REPORT}${reportID}`];
     const policy = getPolicy(policyID);
 
@@ -4983,7 +4984,7 @@ function moveIOUReportToPolicy(reportID: string, policyID: string) {
         return;
     }
     // We do not want to create negative amount expenses
-    if (ReportActionsUtils.hasRequestFromCurrentAccount(iouReport.reportID, iouReport.managerID ?? CONST.DEFAULT_NUMBER_ID)) {
+    if (ReportActionsUtils.hasRequestFromCurrentAccount(iouReport.reportID, iouReport.managerID ?? CONST.DEFAULT_NUMBER_ID) && !isFromSettlementButton) {
         return;
     }
 

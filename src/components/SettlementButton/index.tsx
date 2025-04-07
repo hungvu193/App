@@ -1,4 +1,3 @@
-import {Str} from 'expensify-common';
 import isEmpty from 'lodash/isEmpty';
 import truncate from 'lodash/truncate';
 import React, {useEffect, useMemo, useRef} from 'react';
@@ -436,8 +435,10 @@ function SettlementButton({
                     onPress={(event, iouPaymentType) => {
                         const isPaymentMethod = Object.values(CONST.PAYMENT_METHODS).includes(iouPaymentType as PaymentMethod);
                         const shouldSelectPaymentMethod = isPaymentMethod ?? lastPaymentPolicy ?? !isEmpty(latestBankItem);
-                        if (shouldSelectPaymentMethod) {
-                            selectPaymentMethod(event, triggerKYCFlow, iouPaymentType as PaymentMethod);
+                        const usedPolicy = activeAdminPolicies.find((activePolicy) => activePolicy.id === iouPaymentType);
+
+                        if (!!usedPolicy || shouldSelectPaymentMethod) {
+                            selectPaymentMethod(event, triggerKYCFlow, iouPaymentType as PaymentMethod, usedPolicy);
                             return;
                         }
 

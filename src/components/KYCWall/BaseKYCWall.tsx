@@ -5,14 +5,15 @@ import type {EmitterSubscription, GestureResponderEvent, View} from 'react-nativ
 import {useOnyx} from 'react-native-onyx';
 import AddPaymentMethodMenu from '@components/AddPaymentMethodMenu';
 import {openPersonalBankAccountSetupView} from '@libs/actions/BankAccounts';
-import {completePaymentOnboarding, savePreferredPaymentMethod} from '@libs/actions/IOU';
+import {completePaymentOnboarding} from '@libs/actions/IOU';
+import {moveIOUReportToPolicy} from '@libs/actions/Report';
 import getClickedTargetLocation from '@libs/getClickedTargetLocation';
 import Log from '@libs/Log';
 import Navigation from '@libs/Navigation/Navigation';
 import {hasExpensifyPaymentMethod} from '@libs/PaymentUtils';
 import {isExpenseReport as isExpenseReportReportUtils, isIOUReport} from '@libs/ReportUtils';
 import {kycWallRef} from '@userActions/PaymentMethods';
-import {createWorkspaceFromIOUPayment, moveIOUToExistingPolicy} from '@userActions/Policy/Policy';
+import {createWorkspaceFromIOUPayment} from '@userActions/Policy/Policy';
 import {setKYCWallSource} from '@userActions/Wallet';
 import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
@@ -113,11 +114,7 @@ function KYCWall({
             } else if (paymentMethod === CONST.PAYMENT_METHODS.BUSINESS_BANK_ACCOUNT || policy) {
                 if (iouReport && isIOUReport(iouReport)) {
                     if (policy) {
-                        const {reportID} = moveIOUToExistingPolicy(policy, iouReport) ?? {};
-                        if (reportID) {
-                            Navigation.navigate(ROUTES.REPORT_WITH_ID.getRoute(reportID));
-                            savePreferredPaymentMethod(iouReport?.policyID, policy.id, CONST.LAST_PAYMENT_METHOD.IOU);
-                        }
+                        moveIOUReportToPolicy(iouReport.reportID, policy.id, true);
 
                         Navigation.navigate(ROUTES.BANK_ACCOUNT_WITH_STEP_TO_OPEN.getRoute(policy.id));
                         return;
