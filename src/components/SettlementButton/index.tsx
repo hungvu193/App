@@ -193,7 +193,7 @@ function SettlementButton({
             }
         }
         if (isExpenseReport && shouldShowPaywithExpensifyOption) {
-            if (!isEmpty(latestBankItem)) {
+            if (!isEmpty(latestBankItem) && latestBankItem) {
                 buttonOptions.push({
                     text: latestBankItem.at(0)?.text ?? '',
                     icon: latestBankItem.at(0)?.icon,
@@ -352,6 +352,11 @@ function SettlementButton({
     const selectPaymentMethod = (event: KYCFlowEvent, triggerKYCFlow: TriggerKYCFlow, paymentMethod?: PaymentMethod, usedPolicy?: Policy) => {
         if (!isUserValidated) {
             Navigation.navigate(ROUTES.SETTINGS_WALLET_VERIFY_ACCOUNT.getRoute(Navigation.getActiveRoute()));
+            return;
+        }
+
+        if (policy && shouldRestrictUserBillableActions(policy.id)) {
+            Navigation.navigate(ROUTES.RESTRICTED_ACTION.getRoute(policy.id));
             return;
         }
 
