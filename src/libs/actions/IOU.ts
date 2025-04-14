@@ -9318,9 +9318,11 @@ function payMoneyRequest(paymentType: PaymentMethodType, chatReport: OnyxTypes.R
     // Otherwise, we use the policyID from the iouReport
     // Otherwise, we use the paymentSelected
     if (iouReport && iouReport?.policyID) {
-        const usedPaymentOption = paymentPolicyID ?? paymentSelected;
+        const usedPaymentOption = paymentPolicyID ?? paymentType;
         const reportType = iouReport?.type ?? CONST.LAST_PAYMENT_METHOD.LAST_USED;
-        savePreferredPaymentMethod(iouReport?.policyID, usedPaymentOption, reportType as ValueOf<typeof CONST.LAST_PAYMENT_METHOD>);
+        const lastPaymentMethodType = Object.values(CONST.LAST_PAYMENT_METHOD).find(paymentMethod => reportType === paymentMethod.toLowerCase());
+
+        savePreferredPaymentMethod(iouReport?.policyID, usedPaymentOption, lastPaymentMethodType);
     }
 }
 
