@@ -16,7 +16,7 @@ import {getLastPolicyBankAccountID, getLastPolicyPaymentMethod} from '@libs/acti
 import Navigation from '@libs/Navigation/Navigation';
 import {formatPaymentMethods} from '@libs/PaymentUtils';
 import getPolicyEmployeeAccountIDs from '@libs/PolicyEmployeeListUtils';
-import {getActiveAdminWorkspaces, getPolicy} from '@libs/PolicyUtils';
+import {getActiveAdminWorkspaces, getPolicy, hasVBBA} from '@libs/PolicyUtils';
 import {
     doesReportBelongToWorkspace,
     isBusinessInvoiceRoom,
@@ -35,6 +35,8 @@ import type {PaymentMethodType} from '@src/types/onyx/OriginalMessage';
 import {isEmptyObject} from '@src/types/utils/EmptyObject';
 import isLoadingOnyxValue from '@src/types/utils/isLoadingOnyxValue';
 import type SettlementButtonProps from './types';
+import { ValueOf } from "type-fest";
+import { capitalize } from "lodash";
 
 type KYCFlowEvent = GestureResponderEvent | KeyboardEvent | undefined;
 
@@ -87,8 +89,9 @@ function SettlementButton({
     const policyEmployeeAccountIDs = policyID ? getPolicyEmployeeAccountIDs(policyID) : [];
     const reportBelongsToWorkspace = policyID ? doesReportBelongToWorkspace(chatReport, policyEmployeeAccountIDs, policyID) : false;
     const policyIDKey = reportBelongsToWorkspace ? policyID : iouReport?.policyID ?? CONST.POLICY.ID_FAKE;
+
     const [lastPaymentMethod, lastPaymentMethodResult] = useOnyx(ONYXKEYS.NVP_LAST_PAYMENT_METHOD, {
-        selector: (paymentMethod) => getLastPolicyPaymentMethod(policyIDKey, paymentMethod, iouReport?.type as keyof LastPaymentMethodType),
+        selector: (paymentMethod) => getLastPolicyPaymentMethod(policyIDKey, paymentMethod, capitalize(iouReport?.type) as keyof LastPaymentMethodType),
     });
     const lastBankAccountID = getLastPolicyBankAccountID(policyIDKey, iouReport?.type as keyof LastPaymentMethodType);
     const [fundList = {}] = useOnyx(ONYXKEYS.FUND_LIST);
@@ -121,8 +124,14 @@ function SettlementButton({
     const shouldShowPayElsewhereOption = !shouldHidePaymentOptions && !isInvoiceReport;
 
     function getLatestBankAccountItem() {
+        if(!hasVBBA(policy?.id)) {
+            return;
+        }
+
         const formattedPaymentMethods = formatPaymentMethods(bankAccountList, fundList ?? {}, styles);
-        return formattedPaymentMethods.map((formattedPaymentMethod) => ({
+        const policyBankAccounts = formattedPaymentMethods.filter(method => method.methodID === policy?.achAccount?.bankAccountID);
+
+        return policyBankAccounts.map((formattedPaymentMethod) => ({
             text: formattedPaymentMethod?.title ?? '',
             description: formattedPaymentMethod?.description ?? '',
             icon: formattedPaymentMethod?.icon,
@@ -133,8 +142,8 @@ function SettlementButton({
 
     const latestBankItem = getLatestBankAccountItem();
 
-    const savePreferredPaymentMethod = (id: string, value: string) => {
-        savePreferredPaymentMethodIOU(id, value, undefined);
+    const savePreferredPaymentMethod = (id: string, value: string, type?: ValueOf<typeof CONST.LAST_PAYMENT_METHOD> | undefined) => {
+        savePreferredPaymentMethodIOU(id, value, type);
     };
 
     const paymentButtonOptions = useMemo(() => {
@@ -246,7 +255,7 @@ function SettlementButton({
                             shouldUpdateSelectedIndex: true,
                             onSelected: () => {
                                 onPress(CONST.IOU.PAYMENT_TYPE.ELSEWHERE, undefined, undefined);
-                                savePreferredPaymentMethod(policyIDKey, CONST.IOU.PAYMENT_TYPE.ELSEWHERE);
+                                savePreferredPaymentMethod(policyIDKey, CONST.IOU.PAYMENT_TYPE.ELSEWHERE, CONST.LAST_PAYMENT_METHOD.IOU);
                             },
                         },
                     ],
@@ -272,7 +281,7 @@ function SettlementButton({
                         shouldUpdateSelectedIndex: true,
                         onSelected: () => {
                             onPress(CONST.IOU.PAYMENT_TYPE.ELSEWHERE, true);
-                            savePreferredPaymentMethod(policyIDKey, CONST.IOU.PAYMENT_TYPE.ELSEWHERE);
+                            savePreferredPaymentMethod(policyIDKey, CONST.IOU.PAYMENT_TYPE.ELSEWHERE, CONST.LAST_PAYMENT_METHOD.IOU);
                         },
                     },
                 ],
@@ -457,7 +466,7 @@ function SettlementButton({
                             return;
                         }
 
-                        savePreferredPaymentMethod(policyIDKey, option.value);
+                        savePreferredPaymentMethod(policyIDKey, option.value, CONST.LAST_PAYMENT_METHOD.IOU);
                     }}
                     style={style}
                     wrapperStyle={wrapperStyle}
