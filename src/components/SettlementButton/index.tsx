@@ -1,13 +1,15 @@
+import {capitalize} from 'lodash';
 import isEmpty from 'lodash/isEmpty';
 import truncate from 'lodash/truncate';
 import React, {useEffect, useMemo, useRef} from 'react';
 import type {GestureResponderEvent} from 'react-native';
 import {useOnyx} from 'react-native-onyx';
+import {ValueOf} from 'type-fest';
 import ButtonWithDropdownMenu from '@components/ButtonWithDropdownMenu';
 import * as Expensicons from '@components/Icon/Expensicons';
 import KYCWall from '@components/KYCWall';
-import useAccountValidation from '@hooks/useAccountValidation';
 import type {PaymentMethod} from '@components/KYCWall/types';
+import useAccountValidation from '@hooks/useAccountValidation';
 import useLocalize from '@hooks/useLocalize';
 import useNetwork from '@hooks/useNetwork';
 import useThemeStyles from '@hooks/useThemeStyles';
@@ -36,8 +38,6 @@ import type {PaymentMethodType} from '@src/types/onyx/OriginalMessage';
 import {isEmptyObject} from '@src/types/utils/EmptyObject';
 import isLoadingOnyxValue from '@src/types/utils/isLoadingOnyxValue';
 import type SettlementButtonProps from './types';
-import { ValueOf } from "type-fest";
-import { capitalize } from "lodash";
 
 type KYCFlowEvent = GestureResponderEvent | KeyboardEvent | undefined;
 
@@ -125,12 +125,12 @@ function SettlementButton({
     const shouldShowPayElsewhereOption = !shouldHidePaymentOptions && !isInvoiceReport;
 
     function getLatestBankAccountItem() {
-        if(!hasVBBA(policy?.id)) {
+        if (!hasVBBA(policy?.id)) {
             return;
         }
 
         const formattedPaymentMethods = formatPaymentMethods(bankAccountList, fundList ?? {}, styles);
-        const policyBankAccounts = formattedPaymentMethods.filter(method => method.methodID === policy?.achAccount?.bankAccountID);
+        const policyBankAccounts = formattedPaymentMethods.filter((method) => method.methodID === policy?.achAccount?.bankAccountID);
 
         return policyBankAccounts.map((formattedPaymentMethod) => ({
             text: formattedPaymentMethod?.title ?? '',
@@ -142,16 +142,16 @@ function SettlementButton({
     }
 
     const getLastPaymentMethodType = () => {
-        if(isInvoiceReport) {
+        if (isInvoiceReport) {
             return CONST.LAST_PAYMENT_METHOD.INVOICE;
         }
 
-        if(policy) {
+        if (policy) {
             return CONST.LAST_PAYMENT_METHOD.EXPENSE;
         }
 
         return CONST.LAST_PAYMENT_METHOD.IOU;
-    }
+    };
 
     const savePreferredPaymentMethod = (id: string, value: string) => {
         savePreferredPaymentMethodIOU(id, value, getLastPaymentMethodType());
@@ -424,7 +424,7 @@ function SettlementButton({
             return translate('common.wallet');
         }
 
-        if(lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.VBBA) {
+        if (lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.VBBA) {
             return translate('paymentMethodList.bankAccountLastFour', {lastFour: policy?.achAccount?.accountNumber?.slice(-4) ?? ''});
         }
 

@@ -9463,7 +9463,7 @@ function payMoneyRequest(paymentType: PaymentMethodType, chatReport: OnyxTypes.R
     if (iouReport && iouReport?.policyID) {
         const usedPaymentOption = paymentPolicyID ?? paymentType;
         const reportType = iouReport?.type ?? CONST.LAST_PAYMENT_METHOD.LAST_USED;
-        const lastPaymentMethodType = Object.values(CONST.LAST_PAYMENT_METHOD).find(paymentMethod => reportType === paymentMethod.toLowerCase());
+        const lastPaymentMethodType = Object.values(CONST.LAST_PAYMENT_METHOD).find((paymentMethod) => reportType === paymentMethod.toLowerCase());
 
         savePreferredPaymentMethod(iouReport?.policyID, usedPaymentOption, lastPaymentMethodType);
     }
