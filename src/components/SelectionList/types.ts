@@ -335,6 +335,8 @@ type BaseListItemProps<TItem extends ListItem> = CommonListItemProps<TItem> & {
     hoverStyle?: StyleProp<ViewStyle>;
     /** Errors that this user may contain */
     shouldDisplayRBR?: boolean;
+    /** Test ID of the component. Used to locate this view in end-to-end tests. */
+    testID?: string;
 };
 
 type UserListItemProps<TItem extends ListItem> = ListItemProps<TItem> & {
@@ -359,9 +361,14 @@ type TransactionListItemProps<TItem extends ListItem> = ListItemProps<TItem> & {
     isLoading?: boolean;
 };
 
-type ReportListItemProps<TItem extends ListItem> = ListItemProps<TItem>;
+type ReportListItemProps<TItem extends ListItem> = ListItemProps<TItem> & {
+    /** Callback to fire when the item is pressed */
+    onSelectRow: (item: TItem, isOpenedAsReport?: boolean) => void;
+};
 
-type ChatListItemProps<TItem extends ListItem> = ListItemProps<TItem>;
+type ChatListItemProps<TItem extends ListItem> = ListItemProps<TItem> & {
+    queryJSONHash?: number;
+};
 
 type ValidListItem =
     | typeof RadioListItem
@@ -675,6 +682,9 @@ type SelectionListProps<TItem extends ListItem> = Partial<ChildrenProps> & {
 
     /** Whether to add bottom safe area padding to the content. */
     addOfflineIndicatorBottomSafeAreaPadding?: boolean;
+
+    /** Error text to display */
+    errorText?: string;
 } & TRightHandSideComponent<TItem>;
 
 type SelectionListHandle = {
@@ -699,6 +709,7 @@ type FlattenedSectionsReturn<TItem extends ListItem> = {
     disabledArrowKeyOptionsIndexes: number[];
     itemLayouts: ItemLayout[];
     allSelected: boolean;
+    someSelected: boolean;
 };
 
 type ButtonOrCheckBoxRoles = 'button' | 'checkbox';
