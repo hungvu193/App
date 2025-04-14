@@ -140,11 +140,23 @@ function SettlementButton({
         }));
     }
 
-    const latestBankItem = getLatestBankAccountItem();
+    const getLastPaymentMethodType = () => {
+        if(isInvoiceReport) {
+            return CONST.LAST_PAYMENT_METHOD.INVOICE;
+        }
 
-    const savePreferredPaymentMethod = (id: string, value: string, type?: ValueOf<typeof CONST.LAST_PAYMENT_METHOD> | undefined) => {
-        savePreferredPaymentMethodIOU(id, value, type);
+        if(policy) {
+            return CONST.LAST_PAYMENT_METHOD.EXPENSE;
+        }
+
+        return CONST.LAST_PAYMENT_METHOD.IOU;
+    }
+
+    const savePreferredPaymentMethod = (id: string, value: string) => {
+        savePreferredPaymentMethodIOU(id, value, getLastPaymentMethodType());
     };
+
+    const latestBankItem = getLatestBankAccountItem();
 
     const paymentButtonOptions = useMemo(() => {
         const buttonOptions = [];
@@ -192,6 +204,7 @@ function SettlementButton({
                 buttonOptions.push(paymentMethods[CONST.PAYMENT_METHODS.BUSINESS_BANK_ACCOUNT]);
             }
         }
+
         if (isExpenseReport && shouldShowPaywithExpensifyOption) {
             if (!isEmpty(latestBankItem) && latestBankItem) {
                 buttonOptions.push({
@@ -205,6 +218,10 @@ function SettlementButton({
             }
         }
 
+        if (shouldShowPayElsewhereOption) {
+            buttonOptions.push(paymentMethods[CONST.IOU.PAYMENT_TYPE.ELSEWHERE]);
+        }
+
         if ((hasMultiplePolicies || hasSinglePolicy) && canUseWallet) {
             activeAdminPolicies.forEach((activePolicy) => {
                 const policyName = activePolicy.name;
@@ -215,10 +232,6 @@ function SettlementButton({
                     shouldUpdateSelectedIndex: true,
                 });
             });
-        }
-
-        if (shouldShowPayElsewhereOption) {
-            buttonOptions.push(paymentMethods[CONST.IOU.PAYMENT_TYPE.ELSEWHERE]);
         }
 
         if (isInvoiceReport) {
@@ -255,7 +268,7 @@ function SettlementButton({
                             shouldUpdateSelectedIndex: true,
                             onSelected: () => {
                                 onPress(CONST.IOU.PAYMENT_TYPE.ELSEWHERE, undefined, undefined);
-                                savePreferredPaymentMethod(policyIDKey, CONST.IOU.PAYMENT_TYPE.ELSEWHERE, CONST.LAST_PAYMENT_METHOD.IOU);
+                                savePreferredPaymentMethod(policyIDKey, CONST.IOU.PAYMENT_TYPE.ELSEWHERE);
                             },
                         },
                     ],
@@ -281,7 +294,7 @@ function SettlementButton({
                         shouldUpdateSelectedIndex: true,
                         onSelected: () => {
                             onPress(CONST.IOU.PAYMENT_TYPE.ELSEWHERE, true);
-                            savePreferredPaymentMethod(policyIDKey, CONST.IOU.PAYMENT_TYPE.ELSEWHERE, CONST.LAST_PAYMENT_METHOD.IOU);
+                            savePreferredPaymentMethod(policyIDKey, CONST.IOU.PAYMENT_TYPE.ELSEWHERE);
                         },
                     },
                 ],
@@ -410,6 +423,10 @@ function SettlementButton({
             return translate('common.wallet');
         }
 
+        if(lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.VBBA) {
+            return translate('paymentMethodList.bankAccountLastFour', {lastFour: policy?.achAccount?.accountNumber?.slice(-4) ?? ''});
+        }
+
         if (bankAccount?.accountData?.type === CONST.BANK_ACCOUNT.TYPE.BUSINESS && isExpenseReportUtil(iouReport)) {
             return translate('paymentMethodList.bankAccountLastFour', {lastFour: bankAccount?.accountData?.accountNumber?.slice(-4) ?? ''});
         }
@@ -471,7 +488,7 @@ function SettlementButton({
                             return;
                         }
 
-                        savePreferredPaymentMethod(policyIDKey, option.value, CONST.LAST_PAYMENT_METHOD.IOU);
+                        savePreferredPaymentMethod(policyIDKey, option.value);
                     }}
                     style={style}
                     wrapperStyle={wrapperStyle}
