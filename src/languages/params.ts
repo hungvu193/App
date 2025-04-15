@@ -124,6 +124,16 @@ type DeleteTransactionParams = {
     merchant: string;
 };
 
+type MovedTransactionParams = {
+    reportUrl: string;
+    reportName?: string;
+};
+
+type UnreportedTransactionParams = {
+    reportUrl: string;
+    reportName?: string;
+};
+
 type SettleExpensifyCardParams = {
     formattedAmount: string;
 };
@@ -485,11 +495,15 @@ type CardInfoParams = {name: string; expiration: string; currency: string};
 
 type YourPlanPriceParams = {lower: string; upper: string};
 
+type YourPlanPriceValueParams = {price: string};
+
 type SubscriptionSizeParams = {size: number};
 
 type SubscriptionCommitmentParams = {size: number; date: string};
 
 type SubscriptionSettingsSaveUpToParams = {amountWithCurrency: string};
+
+type SubscriptionSettingsSummaryParams = {subscriptionType: string; subscriptionSize: string; autoRenew: string; autoIncrease: string};
 
 type SubscriptionSettingsRenewsOnParams = {date: string};
 
@@ -805,6 +819,8 @@ export type {
     RequestAmountParams,
     RequestCountParams,
     DeleteTransactionParams,
+    MovedTransactionParams,
+    UnreportedTransactionParams,
     RequestedAmountMessageParams,
     ResolutionConstraintsParams,
     RoomNameReservedErrorParams,
@@ -913,8 +929,10 @@ export type {
     SubmitsToParams,
     SettlementDateParams,
     PolicyExpenseChatNameParams,
+    YourPlanPriceValueParams,
     BusinessBankAccountParams,
     NeedCategoryForExportToIntegrationParams,
+    SubscriptionSettingsSummaryParams,
     BankAccountLastFourParams,
     ReviewParams,
 };
