@@ -860,7 +860,6 @@ describe('SearchUIUtils', () => {
         });
 
         it('should return getTransactionsSections result when shouldGroupByReports is false', () => {
-            console.log(SearchUIUtils.getSections(CONST.SEARCH.DATA_TYPES.EXPENSE, 'all', searchResults.data, searchResults.search, false));
             expect(SearchUIUtils.getSections(CONST.SEARCH.DATA_TYPES.EXPENSE, 'all', searchResults.data, searchResults.search, false)).toStrictEqual(transactionsListItems);
         });
 

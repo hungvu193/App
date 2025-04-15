@@ -5730,7 +5730,7 @@ function getIOUReportActionMessage(
     currency: string,
     paymentType = '',
     isSettlingUp = false,
-    bankAccountID = undefined,
+    bankAccountID?: number | undefined,
     payAsBusiness = false,
 ): Message[] {
     const report = getReportOrDraftReport(iouReportID);
