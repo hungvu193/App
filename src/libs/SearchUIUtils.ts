@@ -494,6 +494,10 @@ function getReportSections(data: OnyxTypes.SearchResults['data'], metadata: Onyx
                 reportIDToTransactions[reportKey].reportName = getIOUReportName(data, reportIDToTransactions[reportKey]);
             }
         } else if (isTransactionEntry(key)) {
+            const reports = Object.keys(data)
+                .filter(isReportEntry)
+                .map((key) => data[key]);
+
             const transactionItem = {...data[key]};
             const reportKey = `${ONYXKEYS.COLLECTION.REPORT}${transactionItem.reportID}`;
             const report = data[`${ONYXKEYS.COLLECTION.REPORT}${transactionItem.reportID}`];
@@ -501,6 +505,7 @@ function getReportSections(data: OnyxTypes.SearchResults['data'], metadata: Onyx
 
             const from = data.personalDetailsList?.[transactionItem.accountID];
             const to = transactionItem.managerID && !shouldShowBlankTo ? data.personalDetailsList?.[transactionItem.managerID] : emptyPersonalDetails;
+            const isPolicyExpenseChat = !!reports.find((rp) => rp.policyID === transactionItem.policyID && rp.isPolicyExpenseChat);
 
             const {formattedFrom, formattedTo, formattedTotal, formattedMerchant, date} = getTransactionItemCommonFormattedProperties(transactionItem, from, to);
 
@@ -520,6 +525,7 @@ function getReportSections(data: OnyxTypes.SearchResults['data'], metadata: Onyx
                 shouldShowTax: metadata?.columnsToShow?.shouldShowTaxColumn,
                 keyForList: transactionItem.transactionID,
                 shouldShowYear: doesDataContainAPastYearTransaction,
+                isPolicyExpenseChat,
             };
             if (reportIDToTransactions[reportKey]?.transactions) {
                 reportIDToTransactions[reportKey].transactions.push(transaction);
