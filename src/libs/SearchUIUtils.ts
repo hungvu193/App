@@ -474,6 +474,11 @@ function getReportSections(data: OnyxTypes.SearchResults['data'], metadata: Onyx
     const doesDataContainAPastYearTransaction = shouldShowYear(data);
 
     const reportIDToTransactions: Record<string, ReportListItemType> = {};
+
+    const reports = Object.keys(data)
+        .filter(isReportEntry)
+        .map((key) => data[key]);
+
     for (const key in data) {
         if (isReportEntry(key)) {
             const reportItem = {...data[key]};
@@ -494,10 +499,6 @@ function getReportSections(data: OnyxTypes.SearchResults['data'], metadata: Onyx
                 reportIDToTransactions[reportKey].reportName = getIOUReportName(data, reportIDToTransactions[reportKey]);
             }
         } else if (isTransactionEntry(key)) {
-            const reports = Object.keys(data)
-                .filter(isReportEntry)
-                .map((key) => data[key]);
-
             const transactionItem = {...data[key]};
             const reportKey = `${ONYXKEYS.COLLECTION.REPORT}${transactionItem.reportID}`;
             const report = data[`${ONYXKEYS.COLLECTION.REPORT}${transactionItem.reportID}`];
