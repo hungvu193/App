@@ -114,10 +114,14 @@ function KYCWall({
             } else if (paymentMethod === CONST.PAYMENT_METHODS.BUSINESS_BANK_ACCOUNT || policy) {
                 if (iouReport && isIOUReport(iouReport)) {
                     if (policy) {
-                        const {iouReportID, policyID} = moveIOUReportToPolicy(iouReport.reportID ?? '', policy.id, true) ?? {};
+                        const {policyID} = moveIOUReportToPolicy(iouReport.reportID ?? '', policy.id, true) ?? {};
                         const policyExpenseChatReportID = getPolicyExpenseChat(iouReport.ownerAccountID, policyID)?.reportID;
                         if (policyExpenseChatReportID) {
                             Navigation.navigate(ROUTES.REPORT_WITH_ID.getRoute(policyExpenseChatReportID));
+                        }
+
+                        if(!!policy?.achAccount) {
+                            return;
                         }
                         // Navigate to the bank account set up flow for this specific policy
                         Navigation.navigate(ROUTES.BANK_ACCOUNT_WITH_STEP_TO_OPEN.getRoute(policyID));
