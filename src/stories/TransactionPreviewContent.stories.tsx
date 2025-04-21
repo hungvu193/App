@@ -2,7 +2,7 @@ import type {InputType} from '@storybook/csf';
 import type {Meta, StoryFn} from '@storybook/react';
 import React from 'react';
 import {View} from 'react-native';
-import {ValueOf} from 'type-fest';
+import type {ValueOf} from 'type-fest';
 import TransactionPreviewContent from '@components/ReportActionItem/TransactionPreview/TransactionPreviewContent';
 import type {TransactionPreviewContentProps} from '@components/ReportActionItem/TransactionPreview/types';
 import ThemeProvider from '@components/ThemeProvider';

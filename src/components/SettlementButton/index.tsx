@@ -119,6 +119,15 @@ function SettlementButton({
         // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
     }, [isLoadingLastPaymentMethod]);
 
+    // this helps reset preffered payment method if the BA is disconnected from the policy
+    useEffect(() => {
+        if (policy?.achAccount && lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.VBBA) {
+            return;
+        }
+
+        savePreferredPaymentMethod(policyID, '');
+    }, [policy?.achAccount]);
+
     const isInvoiceReport = (!isEmptyObject(iouReport) && isInvoiceReportUtil(iouReport)) || false;
     const shouldShowPaywithExpensifyOption = !shouldHidePaymentOptions;
     const shouldShowPayElsewhereOption = !shouldHidePaymentOptions && !isInvoiceReport;
@@ -423,7 +432,7 @@ function SettlementButton({
             return translate('common.wallet');
         }
 
-        if (lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.VBBA) {
+        if (lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.VBBA && !!policy?.achAccount) {
             return translate('paymentMethodList.bankAccountLastFour', {lastFour: policy?.achAccount?.accountNumber?.slice(-4) ?? ''});
         }
 

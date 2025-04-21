@@ -11,7 +11,7 @@ import getClickedTargetLocation from '@libs/getClickedTargetLocation';
 import Log from '@libs/Log';
 import Navigation from '@libs/Navigation/Navigation';
 import {hasExpensifyPaymentMethod} from '@libs/PaymentUtils';
-import {isExpenseReport as isExpenseReportReportUtils, isIOUReport} from '@libs/ReportUtils';
+import {getPolicyExpenseChat, isExpenseReport as isExpenseReportReportUtils, isIOUReport} from '@libs/ReportUtils';
 import {kycWallRef} from '@userActions/PaymentMethods';
 import {createWorkspaceFromIOUPayment} from '@userActions/Policy/Policy';
 import {setKYCWallSource} from '@userActions/Wallet';
@@ -114,11 +114,16 @@ function KYCWall({
             } else if (paymentMethod === CONST.PAYMENT_METHODS.BUSINESS_BANK_ACCOUNT || policy) {
                 if (iouReport && isIOUReport(iouReport)) {
                     if (policy) {
-                        moveIOUReportToPolicy(iouReport.reportID, policy.id, true);
-
-                        Navigation.navigate(ROUTES.BANK_ACCOUNT_WITH_STEP_TO_OPEN.getRoute(policy.id));
+                        const {iouReportID, policyID} = moveIOUReportToPolicy(iouReport.reportID ?? '', policy.id, true) ?? {};
+                        const policyExpenseChatReportID = getPolicyExpenseChat(iouReport.ownerAccountID, policyID)?.reportID;
+                        if (policyExpenseChatReportID) {
+                            Navigation.navigate(ROUTES.REPORT_WITH_ID.getRoute(policyExpenseChatReportID));
+                        }
+                        // Navigate to the bank account set up flow for this specific policy
+                        Navigation.navigate(ROUTES.BANK_ACCOUNT_WITH_STEP_TO_OPEN.getRoute(policyID));
                         return;
                     }
+
                     const {policyID, workspaceChatReportID, reportPreviewReportActionID, adminsChatReportID} = createWorkspaceFromIOUPayment(iouReport) ?? {};
                     completePaymentOnboarding(CONST.PAYMENT_SELECTED.BBA, adminsChatReportID, policyID);
                     if (workspaceChatReportID) {

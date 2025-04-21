@@ -4485,7 +4485,7 @@ function clearDeleteTransactionNavigateBackUrl() {
  * @param policyID - The ID of the policy to move the report to
  * @param isFromSettlementButton - Whether the action is from report preview
  */
-function moveIOUReportToPolicy(reportID: string, policyID: string, isFromSettlementButton?: boolean) {
+function moveIOUReportToPolicy(reportID: string, policyID: string, isFromSettlementButton?: boolean): {iouReportID?: string; policyID?: string} | undefined {
     const iouReport = allReports?.[`${ONYXKEYS.COLLECTION.REPORT}${reportID}`];
     const policy = getPolicy(policyID);
 
@@ -4543,6 +4543,8 @@ function moveIOUReportToPolicy(reportID: string, policyID: string, isFromSettlem
     // The expense report transactions need to have the amount reversed to negative values
     const reportTransactions = getReportTransactions(iouReportID);
 
+    console.log(iouReport, 'transaction.amount');
+
     // For performance reasons, we are going to compose a merge collection data for transactions
     const transactionsOptimisticData: Record<string, Transaction> = {};
     const transactionFailureData: Record<string, Transaction> = {};
@@ -4599,27 +4601,31 @@ function moveIOUReportToPolicy(reportID: string, policyID: string, isFromSettlem
     }
 
     // Create the CHANGE_POLICY report action and add it to the expense report which indicates to the user where the report has been moved
-    const changePolicyReportAction = buildOptimisticChangePolicyReportAction(iouReport.policyID, policyID, true);
-    optimisticData.push({
-        onyxMethod: Onyx.METHOD.MERGE,
-        key: `${ONYXKEYS.COLLECTION.REPORT_ACTIONS}${expenseChatReportId}`,
-        value: {[changePolicyReportAction.reportActionID]: changePolicyReportAction},
-    });
-    successData.push({
-        onyxMethod: Onyx.METHOD.MERGE,
-        key: `${ONYXKEYS.COLLECTION.REPORT_ACTIONS}${expenseChatReportId}`,
-        value: {
-            [changePolicyReportAction.reportActionID]: {
-                ...changePolicyReportAction,
-                pendingAction: null,
+    const changePolicyReportAction = buildOptimisticChangePolicyReportAction(iouReport.reportID, policyID, true);
+
+    // we don't want to add a report action to the expense chat if we're moving the IOU to an existing workspace
+    if (!isFromSettlementButton) {
+        optimisticData.push({
+            onyxMethod: Onyx.METHOD.MERGE,
+            key: `${ONYXKEYS.COLLECTION.REPORT_ACTIONS}${expenseChatReportId}`,
+            value: {[changePolicyReportAction.reportActionID]: changePolicyReportAction},
+        });
+        successData.push({
+            onyxMethod: Onyx.METHOD.MERGE,
+            key: `${ONYXKEYS.COLLECTION.REPORT_ACTIONS}${expenseChatReportId}`,
+            value: {
+                [changePolicyReportAction.reportActionID]: {
+                    ...changePolicyReportAction,
+                    pendingAction: null,
+                },
             },
-        },
-    });
-    failureData.push({
-        onyxMethod: Onyx.METHOD.MERGE,
-        key: `${ONYXKEYS.COLLECTION.REPORT_ACTIONS}${expenseChatReportId}`,
-        value: {[changePolicyReportAction.reportActionID]: null},
-    });
+        });
+        failureData.push({
+            onyxMethod: Onyx.METHOD.MERGE,
+            key: `${ONYXKEYS.COLLECTION.REPORT_ACTIONS}${expenseChatReportId}`,
+            value: {[changePolicyReportAction.reportActionID]: null},
+        });
+    }
 
     // To optimistically remove the GBR from the DM we need to update the hasOutstandingChildRequest param to false
     optimisticData.push({
@@ -4646,6 +4652,8 @@ function moveIOUReportToPolicy(reportID: string, policyID: string, isFromSettlem
     };
 
     API.write(WRITE_COMMANDS.MOVE_IOU_REPORT_TO_EXISTING_POLICY, parameters, {optimisticData, successData, failureData});
+
+    return {iouReportID, policyID};
 }
 
 /**
