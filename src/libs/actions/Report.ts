@@ -4604,8 +4604,6 @@ function moveIOUReportToPolicy(reportID: string, policyID: string, isFromSettlem
     // The expense report transactions need to have the amount reversed to negative values
     const reportTransactions = getReportTransactions(iouReportID);
 
-    console.log(iouReport, 'transaction.amount');
-
     // For performance reasons, we are going to compose a merge collection data for transactions
     const transactionsOptimisticData: Record<string, Transaction> = {};
     const transactionFailureData: Record<string, Transaction> = {};

@@ -151,7 +151,6 @@ import {
     getReportActionHtml,
     getReportActionMessage as getReportActionMessageReportUtils,
     getReportActionMessageText,
-    getReportActions,
     getReportActionText,
     getWorkspaceCurrencyUpdateMessage,
     getWorkspaceFrequencyUpdateMessage,
@@ -8766,7 +8765,7 @@ function getIOUReportActionDisplayMessage(reportAction: OnyxEntry<ReportAction>,
         return '';
     }
     const originalMessage = getOriginalMessage(reportAction);
-    const {IOUReportID, automaticAction, payAsBusiness, bankAccountID} = originalMessage ?? {};
+    const {IOUReportID, automaticAction, payAsBusiness} = originalMessage ?? {};
     const iouReport = getReportOrDraftReport(IOUReportID);
     const isInvoice = isInvoiceReport(iouReport);
 

@@ -96,7 +96,7 @@ function SettlementButton({
 
     const [lastPaymentMethod, lastPaymentMethodResult] = useOnyx(ONYXKEYS.NVP_LAST_PAYMENT_METHOD, {
         selector: (paymentMethod) => getLastPolicyPaymentMethod(policyIDKey, paymentMethod, Str.recapitalize(iouReport?.type ?? '') as keyof LastPaymentMethodType),
-        canBeMissing: true
+        canBeMissing: true,
     });
     const lastBankAccountID = getLastPolicyBankAccountID(policyIDKey, iouReport?.type as keyof LastPaymentMethodType);
     const [fundList = {}] = useOnyx(ONYXKEYS.FUND_LIST, {canBeMissing: true});
@@ -123,16 +123,6 @@ function SettlementButton({
         lastPaymentMethodRef.current = lastPaymentMethod;
         // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
     }, [isLoadingLastPaymentMethod]);
-
-    // This helps reset the preferred payment method if the BA is disconnected from the policy
-    useEffect(() => {
-        const isPolicyID = !!activeAdminPolicies.some((activePolicy) => activePolicy.id === lastPaymentMethod);
-        if (policy && policy?.achAccount && (lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.VBBA || !isPolicyID)) {
-            return;
-        }
-
-        savePreferredPaymentMethod(policyID, '');
-    }, [policy?.achAccount]);
 
     const isInvoiceReport = (!isEmptyObject(iouReport) && isInvoiceReportUtil(iouReport)) || false;
     const shouldShowPaywithExpensifyOption = !shouldHidePaymentOptions;
@@ -170,6 +160,17 @@ function SettlementButton({
     const savePreferredPaymentMethod = (id: string, value: string) => {
         savePreferredPaymentMethodIOU(id, value, getLastPaymentMethodType());
     };
+
+    // This helps reset the preferred payment method if the BA is disconnected from the policy
+    useEffect(() => {
+        const isPolicyID = !!activeAdminPolicies.some((activePolicy) => activePolicy.id === lastPaymentMethod);
+        if (policy && policy?.achAccount && (lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.VBBA || !isPolicyID)) {
+            return;
+        }
+
+        savePreferredPaymentMethod(policyID, '');
+        // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    }, [policy?.achAccount]);
 
     const latestBankItem = getLatestBankAccountItem();
 

@@ -120,7 +120,7 @@ function KYCWall({
                             Navigation.navigate(ROUTES.REPORT_WITH_ID.getRoute(policyExpenseChatReportID));
                         }
 
-                        if (!!policy?.achAccount) {
+                        if (policy?.achAccount) {
                             return;
                         }
                         // Navigate to the bank account set up flow for this specific policy
