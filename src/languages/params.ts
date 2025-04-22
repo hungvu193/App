@@ -139,7 +139,7 @@ type SettleExpensifyCardParams = {
 };
 
 type BusinessBankAccountParams = {
-    formattedAmount: string;
+    amount: string;
     last4Digits: string;
 };
 

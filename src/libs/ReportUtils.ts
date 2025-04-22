@@ -149,6 +149,7 @@ import {
     getReportActionHtml,
     getReportActionMessage as getReportActionMessageReportUtils,
     getReportActionMessageText,
+    getReportActions,
     getReportActionText,
     getWorkspaceCurrencyUpdateMessage,
     getWorkspaceFrequencyUpdateMessage,
@@ -4152,6 +4153,8 @@ function getReportPreviewMessage(
         });
     }
 
+    const reportPolicy = getPolicy(report.policyID);
+
     let linkedTransaction;
     if (!isEmptyObject(iouReportAction) && shouldConsiderScanningReceiptOrPendingRoute && iouReportAction && isMoneyRequestAction(iouReportAction)) {
         linkedTransaction = getLinkedTransaction(iouReportAction);
@@ -4182,13 +4185,18 @@ function getReportPreviewMessage(
             if (originalMessage?.automaticAction) {
                 translatePhraseKey = 'iou.automaticallyPaidWithExpensify';
             }
+
+            if (originalMessage?.paymentType === CONST.IOU.PAYMENT_TYPE.VBBA) {
+                translatePhraseKey = 'iou.businessBankAccount';
+            }
         }
 
         let actualPayerName = report.managerID === currentUserAccountID ? '' : getDisplayNameForParticipant({accountID: report.managerID, shouldUseShortForm: true});
+
         actualPayerName = actualPayerName && isForListPreview && !isPreviewMessageForParentChatReport ? `${actualPayerName}:` : actualPayerName;
         const payerDisplayName = isPreviewMessageForParentChatReport ? payerName : actualPayerName;
 
-        return translateLocal(translatePhraseKey, {amount: formattedAmount, payer: payerDisplayName ?? ''});
+        return translateLocal(translatePhraseKey, {amount: formattedAmount, payer: payerDisplayName ?? '', last4Digits: reportPolicy?.achAccount?.accountNumber.slice(-4) ?? ''});
     }
 
     if (report.isWaitingOnBankAccount) {
@@ -5779,7 +5787,7 @@ function getIOUReportActionMessage(
                 iouMessage =
                     paymentType === CONST.IOU.PAYMENT_TYPE.ELSEWHERE
                         ? translateLocal('iou.payElsewhere', {formattedAmount: amount})
-                        : translateLocal(payAsBusiness ? 'iou.settleInvoiceBusiness' : 'iou.settleInvoicePersonal', {formattedAmount: amount, last4Digits: String(bankAccountID).slice(-4)});
+                        : translateLocal(payAsBusiness ? 'iou.settleInvoiceBusiness' : 'iou.settleInvoicePersonal', {amount, last4Digits: String(bankAccountID).slice(-4)});
             } else {
                 iouMessage = isSettlingUp ? `paid ${amount}${paymentMethodMessage}` : `sent ${amount}${comment && ` for ${comment}`}${paymentMethodMessage}`;
             }
@@ -8686,7 +8694,7 @@ function getTaskAssigneeChatOnyxData(
 /**
  * Return iou report action display message
  */
-function getIOUReportActionDisplayMessage(reportAction: OnyxEntry<ReportAction>, transaction?: OnyxEntry<Transaction>): string {
+function getIOUReportActionDisplayMessage(reportAction: OnyxEntry<ReportAction>, transaction?: OnyxEntry<Transaction>, report?: Report): string {
     if (!isMoneyRequestAction(reportAction)) {
         return '';
     }
@@ -8702,6 +8710,8 @@ function getIOUReportActionDisplayMessage(reportAction: OnyxEntry<ReportAction>,
         // property. If it does, it indicates that this is a 'Pay someone' action.
         const {amount, currency} = originalMessage?.IOUDetails ?? originalMessage ?? {};
         const formattedAmount = convertToDisplayString(Math.abs(amount), currency) ?? '';
+        const reportPolicy = getPolicy(report?.policyID);
+        const last4Digits = reportPolicy?.achAccount?.accountNumber.slice(-4) ?? '';
 
         switch (originalMessage.paymentType) {
             case CONST.IOU.PAYMENT_TYPE.ELSEWHERE:
@@ -8710,9 +8720,9 @@ function getIOUReportActionDisplayMessage(reportAction: OnyxEntry<ReportAction>,
             case CONST.IOU.PAYMENT_TYPE.EXPENSIFY:
             case CONST.IOU.PAYMENT_TYPE.VBBA:
                 if (isInvoice) {
-                    return translateLocal(payAsBusiness ? 'iou.settleInvoiceBusiness' : 'iou.settleInvoicePersonal', {formattedAmount, last4Digits: String(bankAccountID).slice(-4)});
+                    return translateLocal(payAsBusiness ? 'iou.settleInvoiceBusiness' : 'iou.settleInvoicePersonal', {amount: formattedAmount, last4Digits});
                 }
-                translationKey = 'iou.paidWithExpensifyWithAmount';
+                translationKey = 'iou.businessBankAccount';
                 if (automaticAction) {
                     translationKey = 'iou.automaticallyPaidWithExpensify';
                 }
@@ -8721,7 +8731,8 @@ function getIOUReportActionDisplayMessage(reportAction: OnyxEntry<ReportAction>,
                 translationKey = 'iou.payerPaidAmount';
                 break;
         }
-        return translateLocal(translationKey, {amount: formattedAmount, payer: ''});
+
+        return translateLocal(translationKey, {amount: formattedAmount, payer: '', last4Digits});
     }
 
     const amount = getTransactionAmount(transaction, !isEmptyObject(iouReport) && isExpenseReport(iouReport)) ?? 0;
