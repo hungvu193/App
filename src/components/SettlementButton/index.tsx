@@ -119,9 +119,10 @@ function SettlementButton({
         // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
     }, [isLoadingLastPaymentMethod]);
 
-    // this helps reset preffered payment method if the BA is disconnected from the policy
+    // This helps reset the preferred payment method if the BA is disconnected from the policy
     useEffect(() => {
-        if (policy?.achAccount && lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.VBBA) {
+        const isPolicyID = !!activeAdminPolicies.some((activePolicy) => activePolicy.id === lastPaymentMethod);
+        if (policy && policy?.achAccount && (lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.VBBA || !isPolicyID)) {
             return;
         }
 
