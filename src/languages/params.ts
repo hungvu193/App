@@ -233,7 +233,7 @@ type NewWorkspaceNameParams = {userName: string; workspaceNumber?: number};
 
 type RoomNameReservedErrorParams = {reservedName: string};
 
-type RenamedRoomActionParams = {oldName: string; newName: string};
+type RenamedRoomActionParams = {oldName: string; newName: string; actorName?: string};
 
 type RoomRenamedToParams = {newName: string};
 
@@ -628,6 +628,14 @@ type WorkspaceYouMayJoin = {
     email: string;
 };
 
+type WorkEmailResendCodeParams = {
+    workEmail: string | undefined;
+};
+
+type WorkEmailMergingBlockedParams = {
+    workEmail: string | undefined;
+};
+
 type WorkspaceMemberList = {
     employeeCount: number;
     policyOwner: string;
@@ -688,6 +696,10 @@ type PolicyExpenseChatNameParams = {
 
 type ReviewParams = {
     amount: string;
+};
+
+type CurrencyInputDisabledTextParams = {
+    currency: string;
 };
 
 export type {
@@ -919,6 +931,8 @@ export type {
     UpdatedPolicyDescriptionParams,
     EditDestinationSubtitleParams,
     FlightLayoverParams,
+    WorkEmailResendCodeParams,
+    WorkEmailMergingBlockedParams,
     NewWorkspaceNameParams,
     AddedOrDeletedPolicyReportFieldParams,
     AddedPolicyCustomUnitRateParams,
@@ -935,4 +949,5 @@ export type {
     SubscriptionSettingsSummaryParams,
     BankAccountLastFourParams,
     ReviewParams,
+    CurrencyInputDisabledTextParams,
 };
