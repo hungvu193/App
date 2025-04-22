@@ -1007,13 +1007,13 @@ const translations = {
         settlePayment: ({formattedAmount}: SettleExpensifyCardParams) => `Pagar ${formattedAmount}`,
         settleBusiness: ({formattedAmount}: SettleExpensifyCardParams) => (formattedAmount ? `Pagar ${formattedAmount} como negocio` : `Pago con cuenta empresarial`),
         payElsewhere: ({formattedAmount}: SettleExpensifyCardParams) => (formattedAmount ? `Marcar ${formattedAmount} como pagado` : `Marcar como pagado`),
-        settleInvoicePersonal: ({formattedAmount, last4Digits}: BusinessBankAccountParams) =>
-            formattedAmount ? `Pagado ${formattedAmount} con cuenta personal ${last4Digits}` : `Pagado con cuenta personal`,
-        settleInvoiceBusiness: ({formattedAmount, last4Digits}: BusinessBankAccountParams) =>
-            formattedAmount ? `Pagado ${formattedAmount} con cuenta de empresa ${last4Digits}` : `Pagado con cuenta de empresa`,
+        settleInvoicePersonal: ({amount, last4Digits}: BusinessBankAccountParams) =>
+            amount ? `Pagado ${amount} con cuenta personal ${last4Digits}` : `Pagado con cuenta personal`,
+        settleInvoiceBusiness: ({amount, last4Digits}: BusinessBankAccountParams) =>
+            amount ? `Pagado ${amount} con cuenta de empresa ${last4Digits}` : `Pagado con cuenta de empresa`,
         payWithPolicy: ({formattedAmount, policyName}: SettleExpensifyCardParams & {policyName: string}) =>
             formattedAmount ? `Pay ${formattedAmount} via ${policyName}` : `Pay via ${policyName}`,
-        businessBankAccount: ({formattedAmount, last4Digits}: BusinessBankAccountParams) => `Pagó ${formattedAmount} con la cuenta bancaria ${last4Digits}.`,
+        businessBankAccount: ({amount, last4Digits}: BusinessBankAccountParams) => `Pagó ${amount} con la cuenta bancaria ${last4Digits}.`,
         invoicePersonalBank: ({lastFour}: BankAccountLastFourParams) => `Cuenta personal • ${lastFour}`,
         invoiceBussinessBank: ({lastFour}: BankAccountLastFourParams) => `Cuenta de empresa • ${lastFour}`,
         nextStep: 'Pasos siguientes',
