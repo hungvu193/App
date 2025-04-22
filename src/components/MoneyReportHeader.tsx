@@ -173,7 +173,7 @@ function MoneyReportHeader({policy, report: moneyRequestReport, transactionThrea
         return !!transactions && transactions.length > 0 && transactions.every((t) => isExpensifyCardTransaction(t) && isPending(t));
     }, [transactions]);
     const transactionIDs = useMemo(() => transactions?.map((t) => t.transactionID) ?? [], [transactions]);
-    const [allViolations] = useOnyx(ONYXKEYS.COLLECTION.TRANSACTION_VIOLATIONS);
+    const [allViolations] = useOnyx(ONYXKEYS.COLLECTION.TRANSACTION_VIOLATIONS, {canBeMissing: true});
     const violations = useMemo(
         () => Object.fromEntries(Object.entries(allViolations ?? {}).filter(([key]) => transactionIDs.includes(key.replace(ONYXKEYS.COLLECTION.TRANSACTION_VIOLATIONS, '')))),
         [allViolations, transactionIDs],

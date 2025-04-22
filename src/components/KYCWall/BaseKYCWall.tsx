@@ -114,7 +114,7 @@ function KYCWall({
             } else if (paymentMethod === CONST.PAYMENT_METHODS.BUSINESS_BANK_ACCOUNT || policy) {
                 if (iouReport && isIOUReport(iouReport)) {
                     if (policy) {
-                        const {policyID} = moveIOUReportToPolicy(iouReport.reportID ?? '', policy.id, true) ?? {};
+                        const {policyID} = moveIOUReportToPolicy(iouReport.reportID, policy.id, true) ?? {};
                         const policyExpenseChatReportID = getPolicyExpenseChat(iouReport.ownerAccountID, policyID)?.reportID;
                         if (policyExpenseChatReportID) {
                             Navigation.navigate(ROUTES.REPORT_WITH_ID.getRoute(policyExpenseChatReportID));
