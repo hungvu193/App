@@ -96,10 +96,11 @@ function SettlementButton({
 
     const [lastPaymentMethod, lastPaymentMethodResult] = useOnyx(ONYXKEYS.NVP_LAST_PAYMENT_METHOD, {
         selector: (paymentMethod) => getLastPolicyPaymentMethod(policyIDKey, paymentMethod, Str.recapitalize(iouReport?.type ?? '') as keyof LastPaymentMethodType),
+        canBeMissing: true
     });
     const lastBankAccountID = getLastPolicyBankAccountID(policyIDKey, iouReport?.type as keyof LastPaymentMethodType);
-    const [fundList = {}] = useOnyx(ONYXKEYS.FUND_LIST);
-    const [policies] = useOnyx(ONYXKEYS.COLLECTION.POLICY);
+    const [fundList = {}] = useOnyx(ONYXKEYS.FUND_LIST, {canBeMissing: true});
+    const [policies] = useOnyx(ONYXKEYS.COLLECTION.POLICY, {canBeMissing: true});
     const currentUserAccountID = getCurrentUserAccountID().toString();
     const activeAdminPolicies = getActiveAdminWorkspaces(policies, currentUserAccountID).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
@@ -108,7 +109,7 @@ function SettlementButton({
     const policy = policies?.[`${ONYXKEYS.COLLECTION.POLICY}${policyID}`];
     const isLastPaymentPolicy = !Object.values({...CONST.PAYMENT_METHODS, ...CONST.IOU.PAYMENT_TYPE}).includes(lastPaymentMethod as PaymentMethod);
     const lastPaymentPolicy = isLastPaymentPolicy ? getPolicy(lastPaymentMethod) : undefined;
-    const [bankAccountList = {}] = useOnyx(ONYXKEYS.BANK_ACCOUNT_LIST);
+    const [bankAccountList = {}] = useOnyx(ONYXKEYS.BANK_ACCOUNT_LIST, {canBeMissing: true});
     const bankAccount = bankAccountList[lastBankAccountID ?? CONST.DEFAULT_NUMBER_ID];
     // whether the user has single policy and the expense isn't inside a workspace
     const hasSinglePolicy = !policy && activeAdminPolicies.length === 1;
