@@ -8487,7 +8487,7 @@ function getPayMoneyRequestParams(
         const optimisticLastPaymentMethod = {
             [iouReport.policyID]: {
                 lastUsed: paymentMethodType,
-                ...(isInvoiceReport ? {Invoice: {name: paymentMethodType, bankAccountID}} : {}),
+                ...(isInvoiceReport ? {invoice: {name: paymentMethodType, bankAccountID}} : {}),
             },
         };
 

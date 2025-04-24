@@ -264,40 +264,9 @@ function SettlementButton({
                     },
                 }));
 
-            if (isIndividualInvoiceRoomUtil(chatReport)) {
-                buttonOptions.push({
-                    text: translate('iou.settlePersonal', {formattedAmount}),
-                    icon: Expensicons.User,
-                    value: lastPaymentMethod ?? CONST.IOU.PAYMENT_TYPE.ELSEWHERE,
-                    backButtonText: translate('iou.individual'),
-                    subMenuItems: [
-                        ...(isCurrencySupported ? getPaymentSubitems(false) : []),
-                        {
-                            text: translate('workspace.invoices.paymentMethods.addBankAccount'),
-                            icon: Expensicons.Bank,
-                            onSelected: () => Navigation.navigate(addBankAccountRoute),
-                        },
-                        {
-                            text: translate('iou.payElsewhere', {formattedAmount: ''}),
-                            icon: Expensicons.Cash,
-                            value: CONST.IOU.PAYMENT_TYPE.ELSEWHERE,
-                            shouldUpdateSelectedIndex: true,
-                            onSelected: () => {
-                                onPress(CONST.IOU.PAYMENT_TYPE.ELSEWHERE, undefined, undefined);
-                                savePreferredPaymentMethod(policyIDKey, CONST.IOU.PAYMENT_TYPE.ELSEWHERE);
-                            },
-                        },
-                    ],
-                });
-            }
-
-            buttonOptions.push({
-                text: translate('iou.settleBusiness', {formattedAmount}),
-                icon: Expensicons.Building,
-                value: lastPaymentMethod ?? CONST.IOU.PAYMENT_TYPE.ELSEWHERE,
-                backButtonText: translate('iou.business'),
-                subMenuItems: [
-                    ...(isCurrencySupported ? getPaymentSubitems(true) : []),
+            const getInvoicesOptions = (payAsBusiness: boolean) => {
+                return [
+                    ...(isCurrencySupported ? getPaymentSubitems(payAsBusiness) : []),
                     {
                         text: translate('workspace.invoices.paymentMethods.addBankAccount'),
                         icon: Expensicons.Bank,
@@ -309,12 +278,32 @@ function SettlementButton({
                         value: CONST.IOU.PAYMENT_TYPE.ELSEWHERE,
                         shouldUpdateSelectedIndex: true,
                         onSelected: () => {
-                            onPress(CONST.IOU.PAYMENT_TYPE.ELSEWHERE, true);
+                            onPress(CONST.IOU.PAYMENT_TYPE.ELSEWHERE, payAsBusiness, undefined);
                             savePreferredPaymentMethod(policyIDKey, CONST.IOU.PAYMENT_TYPE.ELSEWHERE);
                         },
                     },
-                ],
-            });
+                ];
+            };
+
+            if (isIndividualInvoiceRoomUtil(chatReport)) {
+                buttonOptions.push({
+                    text: translate('iou.settlePersonal', {formattedAmount}),
+                    icon: Expensicons.User,
+                    value: lastPaymentMethod ?? CONST.IOU.PAYMENT_TYPE.ELSEWHERE,
+                    backButtonText: translate('iou.individual'),
+                    subMenuItems: getInvoicesOptions(false),
+                });
+                buttonOptions.push({
+                    text: translate('iou.settleBusiness', {formattedAmount}),
+                    icon: Expensicons.Building,
+                    value: lastPaymentMethod ?? CONST.IOU.PAYMENT_TYPE.ELSEWHERE,
+                    backButtonText: translate('iou.business'),
+                    subMenuItems: getInvoicesOptions(true),
+                });
+            } else {
+                // If there is pay as business option, we should show the submenu items instead.
+                buttonOptions.push(...getInvoicesOptions(true));
+            }
         }
 
         if (shouldShowApproveButton) {
@@ -453,6 +442,8 @@ function SettlementButton({
     const customText = getCustomText();
     const secondlineText = getSecondLineText();
 
+    const shouldUseSplitButton = hasPreferredPaymentMethod || !!lastPaymentPolicy || (!!bankAccount && isExpenseReportUtil(iouReport)) || (isInvoiceReport && !isEmpty(latestBankItem));
+
     return (
         <KYCWall
             onSuccessfulKYC={(paymentType) => onPress(paymentType, undefined, undefined)}
@@ -475,7 +466,7 @@ function SettlementButton({
                     shouldAlwaysShowDropdownMenu={isInvoiceReport}
                     customText={customText}
                     menuHeaderText={isInvoiceReport ? translate('workspace.invoices.paymentMethods.chooseInvoiceMethod') : undefined}
-                    isSplitButton={hasPreferredPaymentMethod || !!lastPaymentPolicy || (!!bankAccount && isExpenseReportUtil(iouReport))}
+                    isSplitButton={shouldUseSplitButton}
                     isDisabled={isDisabled}
                     isLoading={isLoading}
                     defaultSelectedIndex={lastPaymentPolicy ? paymentButtonOptions.findIndex((option) => option.value === lastPaymentPolicy.id) : 0}
