@@ -128,6 +128,20 @@ function SettlementButton({
     const shouldShowPaywithExpensifyOption = !shouldHidePaymentOptions;
     const shouldShowPayElsewhereOption = !shouldHidePaymentOptions && !isInvoiceReport;
 
+    function getPaymentSubitems(payAsBusiness: boolean){
+        const formattedPaymentMethods = formatPaymentMethods(bankAccountList, fundList, styles);
+        return formattedPaymentMethods.map((formattedPaymentMethod) => ({
+            text: formattedPaymentMethod?.title ?? '',
+            description: formattedPaymentMethod?.description ?? '',
+            icon: formattedPaymentMethod?.icon,
+            shouldUpdateSelectedIndex: true,
+            onSelected: () => {
+                onPress(CONST.IOU.PAYMENT_TYPE.EXPENSIFY, payAsBusiness, formattedPaymentMethod.methodID, formattedPaymentMethod.accountType, undefined);
+            },
+        }))
+    }
+        ;
+
     function getLatestBankAccountItem() {
         if (!hasVBBA(policy?.id)) {
             return;
@@ -251,19 +265,7 @@ function SettlementButton({
         }
 
         if (isInvoiceReport) {
-            const formattedPaymentMethods = formatPaymentMethods(bankAccountList, fundList, styles);
             const isCurrencySupported = isCurrencySupportedForDirectReimbursement(currency as CurrencyType);
-            const getPaymentSubitems = (payAsBusiness: boolean) =>
-                formattedPaymentMethods.map((formattedPaymentMethod) => ({
-                    text: formattedPaymentMethod?.title ?? '',
-                    description: formattedPaymentMethod?.description ?? '',
-                    icon: formattedPaymentMethod?.icon,
-                    shouldUpdateSelectedIndex: true,
-                    onSelected: () => {
-                        onPress(CONST.IOU.PAYMENT_TYPE.EXPENSIFY, payAsBusiness, formattedPaymentMethod.methodID, formattedPaymentMethod.accountType, undefined);
-                    },
-                }));
-
             const getInvoicesOptions = (payAsBusiness: boolean) => {
                 return [
                     ...(isCurrencySupported ? getPaymentSubitems(payAsBusiness) : []),
@@ -442,7 +444,7 @@ function SettlementButton({
     const customText = getCustomText();
     const secondlineText = getSecondLineText();
 
-    const shouldUseSplitButton = hasPreferredPaymentMethod || !!lastPaymentPolicy || (!!bankAccount && isExpenseReportUtil(iouReport)) || (isInvoiceReport && !isEmpty(latestBankItem));
+    const shouldUseSplitButton = hasPreferredPaymentMethod || !!lastPaymentPolicy || (!!bankAccount && isExpenseReportUtil(iouReport)) || (isInvoiceReport && !isEmpty(getPaymentSubitems(false)));
 
     return (
         <KYCWall
