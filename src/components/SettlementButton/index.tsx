@@ -127,7 +127,7 @@ function SettlementButton({
     }, [isLoadingLastPaymentMethod]);
 
     const isInvoiceReport = (!isEmptyObject(iouReport) && isInvoiceReportUtil(iouReport)) || false;
-    const shouldShowPaywithExpensifyOption = !shouldHidePaymentOptions;
+    const shouldShowPayWithExpensifyOption = !shouldHidePaymentOptions;
     const shouldShowPayElsewhereOption = !shouldHidePaymentOptions && !isInvoiceReport;
 
     function getPaymentSubitems(payAsBusiness: boolean) {
@@ -233,7 +233,7 @@ function SettlementButton({
             }
         }
 
-        if (isExpenseReport && shouldShowPaywithExpensifyOption) {
+        if (isExpenseReport && shouldShowPayWithExpensifyOption) {
             if (!isEmpty(latestBankItem) && latestBankItem) {
                 buttonOptions.push({
                     text: latestBankItem.at(0)?.text ?? '',
@@ -328,7 +328,7 @@ function SettlementButton({
         currency,
         shouldHidePaymentOptions,
         shouldShowApproveButton,
-        shouldShowPaywithExpensifyOption,
+        shouldShowPayWithExpensifyOption,
         shouldShowPayElsewhereOption,
         chatReport,
         onPress,
