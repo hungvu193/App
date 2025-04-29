@@ -138,6 +138,7 @@ function SettlementButton({
             onSelected: () => {
                 onPress(CONST.IOU.PAYMENT_TYPE.EXPENSIFY, payAsBusiness, formattedPaymentMethod.methodID, formattedPaymentMethod.accountType, undefined);
             },
+            value: '',
         }));
     }
 
@@ -152,7 +153,8 @@ function SettlementButton({
             description: formattedPaymentMethod?.description ?? '',
             icon: formattedPaymentMethod?.icon,
             onSelected: () => onPress(CONST.IOU.PAYMENT_TYPE.EXPENSIFY, true, undefined),
-            value: formattedPaymentMethod?.methodID,
+            methodID: formattedPaymentMethod?.methodID,
+            value: CONST.PAYMENT_METHODS.BUSINESS_BANK_ACCOUNT,
         }));
     }
 
@@ -175,7 +177,12 @@ function SettlementButton({
     // This helps reset the preferred payment method if the BA is disconnected from the policy
     useEffect(() => {
         const isPolicyID = !!activeAdminPolicies.some((activePolicy) => activePolicy.id === lastPaymentMethod);
-        if (policy && policy?.achAccount && (lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.VBBA || !isPolicyID)) {
+        if (!isExpenseReportUtil(iouReport)) {
+            return;
+        }
+
+        if (policy && policy?.achAccount && (lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.VBBA || !isPolicyID || !lastPaymentMethod)) {
+            savePreferredPaymentMethod(policyID, CONST.IOU.PAYMENT_TYPE.VBBA);
             return;
         }
 
@@ -245,10 +252,6 @@ function SettlementButton({
             }
         }
 
-        if (shouldShowPayElsewhereOption) {
-            buttonOptions.push(paymentMethods[CONST.IOU.PAYMENT_TYPE.ELSEWHERE]);
-        }
-
         if ((hasMultiplePolicies || hasSinglePolicy) && canUseWallet) {
             activeAdminPolicies.forEach((activePolicy) => {
                 const policyName = activePolicy.name;
@@ -261,6 +264,10 @@ function SettlementButton({
             });
         }
 
+        if (shouldShowPayElsewhereOption) {
+            buttonOptions.push(paymentMethods[CONST.IOU.PAYMENT_TYPE.ELSEWHERE]);
+        }
+
         if (isInvoiceReport) {
             const isCurrencySupported = isCurrencySupportedForDirectReimbursement(currency as CurrencyType);
             const getInvoicesOptions = (payAsBusiness: boolean) => {
@@ -270,6 +277,7 @@ function SettlementButton({
                         text: translate('workspace.invoices.paymentMethods.addBankAccount'),
                         icon: Expensicons.Bank,
                         onSelected: () => Navigation.navigate(addBankAccountRoute),
+                        value: '',
                     },
                     {
                         text: translate('iou.payElsewhere', {formattedAmount: ''}),
@@ -406,14 +414,16 @@ function SettlementButton({
         if (paymentType === CONST.IOU.PAYMENT_TYPE.EXPENSIFY || paymentType === CONST.IOU.PAYMENT_TYPE.VBBA) {
             setPersonalBankAccountContinueKYCOnSuccess(ROUTES.ENABLE_PAYMENTS);
         }
+        savePreferredPaymentMethod(policyIDKey, selectedPolicy?.id ?? paymentType);
     };
 
     const getCustomText = () => {
-        if (lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.ELSEWHERE) {
-            return translate('iou.payElsewhere', {formattedAmount: ''});
-        }
         if (shouldUseShortForm) {
             return translate('iou.pay');
+        }
+
+        if (lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.ELSEWHERE) {
+            return translate('iou.payElsewhere', {formattedAmount: ''});
         }
 
         return translate('iou.settlePayment', {formattedAmount});
@@ -463,7 +473,6 @@ function SettlementButton({
 
         if (!!selectedPolicy || shouldSelectPaymentMethod) {
             selectPaymentMethod(event, triggerKYCFlow, selectedOption as PaymentMethod, selectedPolicy);
-            savePreferredPaymentMethod(policyIDKey, selectedOption);
             return;
         }
 
@@ -472,6 +481,18 @@ function SettlementButton({
 
     const customText = getCustomText();
     const secondlineText = getSecondLineText();
+
+    const defaultSelectedIndex = paymentButtonOptions.findIndex((paymentOption) => {
+        if (latestBankItem?.length) {
+            return paymentOption.value === latestBankItem.at(0)?.value;
+        }
+
+        if (lastPaymentPolicy?.id) {
+            return paymentOption.value === lastPaymentPolicy.id;
+        }
+
+        return false;
+    });
 
     const shouldUseSplitButton = hasPreferredPaymentMethod || !!lastPaymentPolicy || (!!bankAccount && isExpenseReportUtil(iouReport)) || (isInvoiceReport && hasIntentToPay);
 
@@ -500,7 +521,7 @@ function SettlementButton({
                     isSplitButton={shouldUseSplitButton}
                     isDisabled={isDisabled}
                     isLoading={isLoading}
-                    defaultSelectedIndex={lastPaymentPolicy ? paymentButtonOptions.findIndex((option) => option.value === lastPaymentPolicy.id) : 0}
+                    defaultSelectedIndex={defaultSelectedIndex !== -1 ? defaultSelectedIndex : 0}
                     onPress={(event, iouPaymentType) => handlePaymentSelection(event, iouPaymentType, triggerKYCFlow)}
                     success={!hasOnlyHeldExpenses}
                     secondLineText={secondlineText}
