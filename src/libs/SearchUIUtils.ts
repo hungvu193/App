@@ -321,10 +321,15 @@ function processTransaction(
         throw new Error(`Transaction not found for key: ${key}`);
     }
 
+    const reports = Object.keys(data)
+        .filter(isReportEntry)
+        .map((key) => data[key]);
+
     const from = data.personalDetailsList?.[transactionItem.accountID];
     const to = transactionItem.managerID && !shouldShowBlankTo ? data.personalDetailsList?.[transactionItem.managerID] : emptyPersonalDetails;
 
     const {formattedFrom, formattedTo, formattedTotal, formattedMerchant, date} = getTransactionItemCommonFormattedProperties(transactionItem, from, to);
+    const isPolicyExpenseChat = !!reports.find((rp) => rp.policyID === transactionItem.policyID && rp.isPolicyExpenseChat);
 
     return {
         ...transactionItem,
@@ -342,7 +347,7 @@ function processTransaction(
         shouldShowTax: metadata?.columnsToShow?.shouldShowTaxColumn,
         keyForList: transactionItem.transactionID,
         shouldShowYear: doesDataContainAPastYearTransaction,
-                isPolicyExpenseChat,
+        isPolicyExpenseChat,
     };
 }
 
