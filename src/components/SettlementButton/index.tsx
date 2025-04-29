@@ -429,7 +429,7 @@ function SettlementButton({
             return lastPaymentPolicy.name;
         }
 
-        if (lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.EXPENSIFY || hasIntentToPay) {
+        if (lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.EXPENSIFY || hasIntentToPay && !isExpenseReportUtil(iouReport)) {
             const bankAccountToDisplay = hasIntentToPay ? (formattedPaymentMethods.at(0) as BankAccount) : bankAccount;
             if (isBusinessInvoiceRoom(chatReport) && bankAccountToDisplay) {
                 return translate('iou.invoiceBussinessBank', {lastFour: bankAccountToDisplay?.accountData?.accountNumber?.slice(-4) ?? ''});

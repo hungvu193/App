@@ -135,7 +135,6 @@ function MoneyReportHeader({policy, report: moneyRequestReport, transactionThrea
     }, [reportActions, transactionThreadReport?.parentReportActionID]);
     const [transactions = []] = useOnyx(ONYXKEYS.COLLECTION.TRANSACTION, {
         selector: (_transactions) => reportTransactionsSelector(_transactions, moneyRequestReport?.reportID),
-        canBeMissing: true,
         initialValue: [],
         canBeMissing: true,
     });

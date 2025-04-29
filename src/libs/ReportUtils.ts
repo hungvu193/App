@@ -4250,7 +4250,7 @@ function getReportPreviewMessage(
         const payerDisplayName = isPreviewMessageForParentChatReport ? payerName : actualPayerName;
         if (isForListPreview && report?.parentReportID != null) {
             const payerText = isDM(parentReport) && translatePhraseKey === 'iou.payerPaidAmount' ? '' : payerDisplayName;
-            return translateLocal(translatePhraseKey, {amount: formattedAmount, payer: payerText});
+            return translateLocal(translatePhraseKey, {amount: formattedAmount, payer: payerText, last4Digits: ''});
         }
 
         return translateLocal(translatePhraseKey, {amount: formattedAmount, payer: payerDisplayName ?? '', last4Digits: reportPolicy?.achAccount?.accountNumber.slice(-4) ?? ''});
