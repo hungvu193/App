@@ -4556,7 +4556,7 @@ function clearDeleteTransactionNavigateBackUrl() {
  * @param policyID - The ID of the policy to move the report to
  * @param isFromSettlementButton - Whether the action is from report preview
  */
-function moveIOUReportToPolicy(reportID: string, policyID: string, isFromSettlementButton?: boolean): {iouReportID?: string; policyID?: string} | undefined {
+function moveIOUReportToPolicy(reportID: string, policyID: string, isFromSettlementButton?: boolean) {
     const iouReport = allReports?.[`${ONYXKEYS.COLLECTION.REPORT}${reportID}`];
     const policy = getPolicy(policyID);
 
@@ -4721,8 +4721,6 @@ function moveIOUReportToPolicy(reportID: string, policyID: string, isFromSettlem
     };
 
     API.write(WRITE_COMMANDS.MOVE_IOU_REPORT_TO_EXISTING_POLICY, parameters, {optimisticData, successData, failureData});
-
-    return {iouReportID, policyID};
 }
 
 /**
@@ -4730,7 +4728,7 @@ function moveIOUReportToPolicy(reportID: string, policyID: string, isFromSettlem
  * @param reportID - The ID of the IOU report to move
  * @param policyID - The ID of the policy to move the report to
  */
-function moveIOUReportToPolicyAndInviteSubmitter(reportID: string, policyID: string) {
+function moveIOUReportToPolicyAndInviteSubmitter(reportID: string, policyID: string): {policyExpenseChatReportID?: string} | undefined {
     const iouReport = allReports?.[`${ONYXKEYS.COLLECTION.REPORT}${reportID}`];
     const policy = getPolicy(policyID);
 
@@ -4959,6 +4957,7 @@ function moveIOUReportToPolicyAndInviteSubmitter(reportID: string, policyID: str
     };
 
     API.write(WRITE_COMMANDS.MOVE_IOU_REPORT_TO_POLICY_AND_INVITE_SUBMITTER, parameters, {optimisticData, successData, failureData});
+    return {policyExpenseChatReportID: optimisticPolicyExpenseChatReportID};
 }
 
 /**

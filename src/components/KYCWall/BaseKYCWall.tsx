@@ -6,7 +6,7 @@ import AddPaymentMethodMenu from '@components/AddPaymentMethodMenu';
 import useOnyx from '@hooks/useOnyx';
 import {openPersonalBankAccountSetupView} from '@libs/actions/BankAccounts';
 import {completePaymentOnboarding} from '@libs/actions/IOU';
-import {moveIOUReportToPolicy} from '@libs/actions/Report';
+import {moveIOUReportToPolicy, moveIOUReportToPolicyAndInviteSubmitter} from '@libs/actions/Report';
 import getClickedTargetLocation from '@libs/getClickedTargetLocation';
 import Log from '@libs/Log';
 import Navigation from '@libs/Navigation/Navigation';
@@ -114,9 +114,12 @@ function KYCWall({
             } else if (paymentMethod === CONST.PAYMENT_METHODS.BUSINESS_BANK_ACCOUNT || policy) {
                 if (iouReport && isIOUReport(iouReport)) {
                     if (policy) {
-                        const {policyID} = moveIOUReportToPolicy(iouReport.reportID, policy.id, true) ?? {};
-                        const policyExpenseChatReportID = getPolicyExpenseChat(iouReport.ownerAccountID, policyID)?.reportID;
-                        if (policyExpenseChatReportID) {
+                        const policyExpenseChatReportID = getPolicyExpenseChat(iouReport.ownerAccountID, policy.id)?.reportID;
+                        if (!policyExpenseChatReportID) {
+                            const {policyExpenseChatReportID: newPolicyExpenseChatReportID} = moveIOUReportToPolicyAndInviteSubmitter(iouReport.reportID, policy.id) ?? {};
+                            Navigation.navigate(ROUTES.REPORT_WITH_ID.getRoute(newPolicyExpenseChatReportID));
+                        } else {
+                            moveIOUReportToPolicy(iouReport.reportID, policy.id, true);
                             Navigation.navigate(ROUTES.REPORT_WITH_ID.getRoute(policyExpenseChatReportID));
                         }
 
@@ -124,7 +127,7 @@ function KYCWall({
                             return;
                         }
                         // Navigate to the bank account set up flow for this specific policy
-                        Navigation.navigate(ROUTES.BANK_ACCOUNT_WITH_STEP_TO_OPEN.getRoute(policyID));
+                        Navigation.navigate(ROUTES.BANK_ACCOUNT_WITH_STEP_TO_OPEN.getRoute(policy.id));
                         return;
                     }
 
