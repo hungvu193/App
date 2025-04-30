@@ -323,7 +323,7 @@ function processTransaction(
 
     const reports = Object.keys(data)
         .filter(isReportEntry)
-        .map((key) => data[key]);
+        .map((dataKey) => data[dataKey]);
 
     const from = data.personalDetailsList?.[transactionItem.accountID];
     const to = transactionItem.managerID && !shouldShowBlankTo ? data.personalDetailsList?.[transactionItem.managerID] : emptyPersonalDetails;
@@ -537,10 +537,6 @@ function getReportSections(data: OnyxTypes.SearchResults['data'], metadata: Onyx
     const doesDataContainAPastYearTransaction = shouldShowYear(data);
 
     const reportIDToTransactions: Record<string, ReportListItemType> = {};
-
-    const reports = Object.keys(data)
-        .filter(isReportEntry)
-        .map((key) => data[key]);
 
     for (const key in data) {
         if (isReportEntry(key)) {
