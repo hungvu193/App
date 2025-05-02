@@ -137,6 +137,9 @@ function SettlementButton({
             onSelected: () => {
                 onPress(CONST.IOU.PAYMENT_TYPE.EXPENSIFY, payAsBusiness, formattedPaymentMethod.methodID, formattedPaymentMethod.accountType, undefined);
             },
+            iconStyles: formattedPaymentMethod?.iconStyles,
+            iconHeight: formattedPaymentMethod?.iconSize,
+            iconWidth: formattedPaymentMethod?.iconSize,
             value: '',
         }));
     }
