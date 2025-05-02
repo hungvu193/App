@@ -191,7 +191,8 @@ function KYCWall({
                 const clickedElementLocation = getClickedTargetLocation(targetElement as HTMLDivElement);
                 const position = getAnchorPosition(clickedElementLocation);
 
-                if (paymentMethod ?? policy) {
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                if (paymentMethod || policy) {
                     setShouldShowAddPaymentMenu(false);
                     selectPaymentMethod(paymentMethod, policy);
                     return;
