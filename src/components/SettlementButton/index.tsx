@@ -140,7 +140,7 @@ function SettlementButton({
             iconStyles: formattedPaymentMethod?.iconStyles,
             iconHeight: formattedPaymentMethod?.iconSize,
             iconWidth: formattedPaymentMethod?.iconSize,
-            value: '',
+            value: CONST.IOU.PAYMENT_TYPE.EXPENSIFY,
         }));
     }
 
@@ -279,7 +279,7 @@ function SettlementButton({
                         text: translate('workspace.invoices.paymentMethods.addBankAccount'),
                         icon: Expensicons.Bank,
                         onSelected: () => Navigation.navigate(addBankAccountRoute),
-                        value: '',
+                        value: CONST.IOU.PAYMENT_TYPE.EXPENSIFY,
                     },
                     {
                         text: translate('iou.payElsewhere', {formattedAmount: ''}),
