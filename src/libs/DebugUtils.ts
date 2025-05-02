@@ -1056,6 +1056,7 @@ function validateTransactionDraftProperty(key: keyof Transaction, value: string)
                     managedCard: CONST.RED_BRICK_ROAD_PENDING_ACTION,
                     posted: CONST.RED_BRICK_ROAD_PENDING_ACTION,
                     inserted: CONST.RED_BRICK_ROAD_PENDING_ACTION,
+                    accountant: CONST.RED_BRICK_ROAD_PENDING_ACTION,
                 },
                 'string',
             );
@@ -1092,6 +1093,11 @@ function validateTransactionDraftProperty(key: keyof Transaction, value: string)
                 liabilityType: CONST.TRANSACTION.LIABILITY_TYPE,
                 splits: 'array',
                 dismissedViolations: 'object',
+            });
+        case 'accountant':
+            return validateObject<ObjectElement<Transaction, 'accountant'>>(value, {
+                accountID: 'number',
+                login: 'string',
             });
         case 'modifiedAttendees':
             return validateArray<ArrayElement<Comment, 'attendees'>>(value, {

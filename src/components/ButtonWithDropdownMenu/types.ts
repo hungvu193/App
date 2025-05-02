@@ -35,6 +35,7 @@ type DropdownOption<TValueType> = {
     shouldCloseModalOnSelect?: boolean;
     /** Whether the selected index should be updated when the option is selected even if we have onSelected callback */
     shouldUpdateSelectedIndex?: boolean;
+    shouldPreserveSelectionAfterHideModal?: boolean;
 };
 
 type ButtonWithDropdownMenuProps<TValueType> = {
