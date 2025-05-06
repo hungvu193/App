@@ -31,7 +31,7 @@ import {approveMoneyRequest, savePreferredPaymentMethod as savePreferredPaymentM
 import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
 import ROUTES from '@src/ROUTES';
-import type {BankAccount, LastPaymentMethodType, Policy} from '@src/types/onyx';
+import type {AccountData, BankAccount, LastPaymentMethodType, Policy} from '@src/types/onyx';
 import type {PaymentMethodType} from '@src/types/onyx/OriginalMessage';
 import {isEmptyObject} from '@src/types/utils/EmptyObject';
 import isLoadingOnyxValue from '@src/types/utils/isLoadingOnyxValue';
@@ -129,19 +129,23 @@ function SettlementButton({
     const shouldShowPayElsewhereOption = !shouldHidePaymentOptions && !isInvoiceReport;
 
     function getPaymentSubitems(payAsBusiness: boolean) {
-        return formattedPaymentMethods.map((formattedPaymentMethod) => ({
-            text: formattedPaymentMethod?.title ?? '',
-            description: formattedPaymentMethod?.description ?? '',
-            icon: formattedPaymentMethod?.icon,
-            shouldUpdateSelectedIndex: true,
-            onSelected: () => {
-                onPress(CONST.IOU.PAYMENT_TYPE.EXPENSIFY, payAsBusiness, formattedPaymentMethod.methodID, formattedPaymentMethod.accountType, undefined);
-            },
-            iconStyles: formattedPaymentMethod?.iconStyles,
-            iconHeight: formattedPaymentMethod?.iconSize,
-            iconWidth: formattedPaymentMethod?.iconSize,
-            value: CONST.IOU.PAYMENT_TYPE.EXPENSIFY,
-        }));
+        return formattedPaymentMethods
+            .filter((v) =>
+                payAsBusiness ? (v?.accountData as AccountData)?.type === CONST.BANK_ACCOUNT.TYPE.BUSINESS : (v?.accountData as AccountData)?.type === CONST.BANK_ACCOUNT.TYPE.PERSONAL,
+            )
+            .map((formattedPaymentMethod) => ({
+                text: formattedPaymentMethod?.title ?? '',
+                description: formattedPaymentMethod?.description ?? '',
+                icon: formattedPaymentMethod?.icon,
+                shouldUpdateSelectedIndex: true,
+                onSelected: () => {
+                    onPress(CONST.IOU.PAYMENT_TYPE.EXPENSIFY, payAsBusiness, formattedPaymentMethod.methodID, formattedPaymentMethod.accountType, undefined);
+                },
+                iconStyles: formattedPaymentMethod?.iconStyles,
+                iconHeight: formattedPaymentMethod?.iconSize,
+                iconWidth: formattedPaymentMethod?.iconSize,
+                value: CONST.IOU.PAYMENT_TYPE.EXPENSIFY,
+            }));
     }
 
     function getLatestBankAccountItem() {
