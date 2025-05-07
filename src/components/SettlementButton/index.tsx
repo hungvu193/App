@@ -368,7 +368,7 @@ function SettlementButton({
                 const currentBankInformation = formattedPaymentMethods.at(0) as BankAccount;
                 onPress(
                     CONST.IOU.PAYMENT_TYPE.EXPENSIFY,
-                    currentBankInformation.accountType !== CONST.PAYMENT_METHODS.PERSONAL_BANK_ACCOUNT,
+                    currentBankInformation.accountData?.type === CONST.BANK_ACCOUNT.TYPE.BUSINESS,
                     currentBankInformation.methodID,
                     currentBankInformation.accountType,
                     undefined,
