@@ -5,7 +5,7 @@ import type {EmitterSubscription, GestureResponderEvent, View} from 'react-nativ
 import AddPaymentMethodMenu from '@components/AddPaymentMethodMenu';
 import useOnyx from '@hooks/useOnyx';
 import {openPersonalBankAccountSetupView} from '@libs/actions/BankAccounts';
-import {completePaymentOnboarding} from '@libs/actions/IOU';
+import {completePaymentOnboarding, savePreferredPaymentMethod} from '@libs/actions/IOU';
 import {moveIOUReportToPolicy, moveIOUReportToPolicyAndInviteSubmitter} from '@libs/actions/Report';
 import getClickedTargetLocation from '@libs/getClickedTargetLocation';
 import Log from '@libs/Log';
@@ -132,6 +132,7 @@ function KYCWall({
                     }
 
                     const {policyID, workspaceChatReportID, reportPreviewReportActionID, adminsChatReportID} = createWorkspaceFromIOUPayment(iouReport) ?? {};
+                    savePreferredPaymentMethod(iouReport.policyID, policyID ?? '', CONST.LAST_PAYMENT_METHOD.IOU);
                     completePaymentOnboarding(CONST.PAYMENT_SELECTED.BBA, adminsChatReportID, policyID);
                     if (workspaceChatReportID) {
                         Navigation.navigate(ROUTES.REPORT_WITH_ID.getRoute(workspaceChatReportID, reportPreviewReportActionID));

@@ -125,6 +125,12 @@ type ButtonWithDropdownMenuProps<TValueType> = {
 
     /** The second line text displays under the first line */
     secondLineText?: string;
+
+    /** Whether the popover content should be scrollable */
+    shouldPopoverUseScrollView?: boolean;
+
+    /** Container style to be applied to the popover of the dropdown menu */
+    containerStyles?: StyleProp<ViewStyle>;
 };
 
 export type {

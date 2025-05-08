@@ -6,7 +6,7 @@ import type CONST from '@src/CONST';
  */
 type PaymentInformation = {
     /** The name of the  */
-    name: ValueOf<typeof CONST.IOU.PAYMENT_TYPE>;
+    name: ValueOf<typeof CONST.IOU.PAYMENT_TYPE> | string;
     /** The bank account id of the last payment method */
     bankAccountID?: number;
 };
@@ -16,7 +16,7 @@ type PaymentInformation = {
  */
 type LastPaymentMethodType = {
     /** The default last payment method */
-    lastUsed: string;
+    lastUsed: PaymentInformation;
     /** The lastPaymentMethod of an IOU */
     iou: string;
     /** The lastPaymentMethod of an Expense */

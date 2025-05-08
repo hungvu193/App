@@ -47,6 +47,8 @@ function ButtonWithDropdownMenu<IValueType>({
     shouldShowSelectedItemCheck = false,
     testID,
     secondLineText = '',
+    shouldPopoverUseScrollView = false,
+    containerStyles,
 }: ButtonWithDropdownMenuProps<IValueType>) {
     const theme = useTheme();
     const styles = useThemeStyles();
@@ -223,6 +225,8 @@ function ButtonWithDropdownMenu<IValueType>({
                     withoutOverlay
                     anchorAlignment={anchorAlignment}
                     headerText={menuHeaderText}
+                    shouldUseScrollView={shouldPopoverUseScrollView}
+                    containerStyles={containerStyles}
                     menuItems={options.map((item, index) => ({
                         ...item,
                         onSelected: item.onSelected

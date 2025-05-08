@@ -794,6 +794,12 @@ Onyx.connect({
     callback: (value) => (betas = value),
 });
 
+let lastUsedPaymentMethods: OnyxEntry<OnyxTypes.LastPaymentMethod>;
+Onyx.connect({
+    key: ONYXKEYS.NVP_LAST_PAYMENT_METHOD,
+    callback: (value) => (lastUsedPaymentMethods = value),
+});
+
 /**
  * @private
  * After finishing the action in RHP from the Inbox tab, besides dismissing the modal, we should open the report.
@@ -10379,7 +10385,12 @@ function savePreferredPaymentMethod(policyID: string | undefined, paymentMethod:
     if (!policyID) {
         return;
     }
-    Onyx.merge(`${ONYXKEYS.NVP_LAST_PAYMENT_METHOD}`, {[policyID]: type ? {[type]: {name: paymentMethod}, [CONST.LAST_PAYMENT_METHOD.LAST_USED]: paymentMethod} : paymentMethod});
+
+    // to make it easier to revert to the previous last payment method, we will save it to this key
+    const prevPaymentMethod = lastUsedPaymentMethods?.[policyID] as OnyxTypes.LastPaymentMethodType;
+    Onyx.merge(`${ONYXKEYS.NVP_LAST_PAYMENT_METHOD}`, {
+        [policyID]: type ? {[type]: {name: paymentMethod}, [CONST.LAST_PAYMENT_METHOD.LAST_USED]: {name: prevPaymentMethod?.lastUsed?.name ?? paymentMethod}} : paymentMethod,
+    });
 }
 
 /** Get report policy id of IOU request */

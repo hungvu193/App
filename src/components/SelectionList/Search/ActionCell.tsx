@@ -1,15 +1,17 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {View} from 'react-native';
 import {useOnyx} from 'react-native-onyx';
 import Badge from '@components/Badge';
 import Button from '@components/Button';
 import * as Expensicons from '@components/Icon/Expensicons';
+import {PaymentMethodType} from '@components/KYCWall/types';
 import SettlementButton from '@components/SettlementButton';
 import useLocalize from '@hooks/useLocalize';
 import useNetwork from '@hooks/useNetwork';
 import useStyleUtils from '@hooks/useStyleUtils';
 import useTheme from '@hooks/useTheme';
 import useThemeStyles from '@hooks/useThemeStyles';
+import {payMoneyRequest} from '@libs/actions/IOU';
 import variables from '@styles/variables';
 import CONST from '@src/CONST';
 import type {TranslationPaths} from '@src/languages/types';
@@ -62,6 +64,19 @@ function ActionCell({
     const [iouReport] = useOnyx(`${ONYXKEYS.COLLECTION.REPORT}${reportID}`, {canBeMissing: true});
     const text = isChildListItem ? translate(actionTranslationsMap[CONST.SEARCH.ACTION_TYPES.VIEW]) : translate(actionTranslationsMap[action]);
     const shouldUseViewAction = action === CONST.SEARCH.ACTION_TYPES.VIEW || (parentAction === CONST.SEARCH.ACTION_TYPES.PAID && action === CONST.SEARCH.ACTION_TYPES.PAID);
+    const [chatReport] = useOnyx(`${ONYXKEYS.COLLECTION.REPORT}${iouReport?.chatReportID}`, {canBeMissing: true});
+
+    const confirmPayment = useCallback(
+        (type: PaymentMethodType | undefined) => {
+            console.log({chatReport, type, iouReport, reportID});
+            if (!type || !chatReport) {
+                return;
+            }
+
+            payMoneyRequest(type, chatReport, iouReport);
+        },
+        [chatReport, iouReport, chatReport],
+    );
 
     if ((parentAction !== CONST.SEARCH.ACTION_TYPES.PAID && action === CONST.SEARCH.ACTION_TYPES.PAID) || (action === CONST.SEARCH.ACTION_TYPES.DONE && !isChildListItem)) {
         return (
@@ -116,7 +131,7 @@ function ActionCell({
                 iouReport={iouReport}
                 enablePaymentsRoute={ROUTES.ENABLE_PAYMENTS}
                 addBankAccountRoute={bankAccountRoute}
-                onPress={goToItem}
+                onPress={confirmPayment}
                 style={[styles.w100]}
                 shouldShowPersonalBankAccountOption={!policyID}
             />
