@@ -247,7 +247,7 @@ function addPersonalBankAccount(account: PlaidBankAccount, policyID?: string, so
                 value: {
                     currentStep: CONST.WALLET.STEP.ADDITIONAL_DETAILS,
                 },
-            }
+            },
         ],
         failureData: [
             {
@@ -257,11 +257,11 @@ function addPersonalBankAccount(account: PlaidBankAccount, policyID?: string, so
                     isLoading: false,
                     errors: getMicroSecondOnyxErrorWithTranslationKey('walletPage.addBankAccountFailure'),
                 },
-            }
+            },
         ],
     };
 
-    if(policyID) {
+    if (policyID) {
         onyxData.optimisticData?.push({
             onyxMethod: Onyx.METHOD.MERGE,
             key: ONYXKEYS.NVP_LAST_PAYMENT_METHOD,
@@ -270,7 +270,7 @@ function addPersonalBankAccount(account: PlaidBankAccount, policyID?: string, so
                     name: CONST.IOU.PAYMENT_TYPE.EXPENSIFY,
                 },
             },
-        },)
+        });
         onyxData.successData?.push({
             onyxMethod: Onyx.METHOD.MERGE,
             key: ONYXKEYS.NVP_LAST_PAYMENT_METHOD,
