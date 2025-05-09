@@ -2527,7 +2527,7 @@ const CONST = {
     },
 
     ENVIRONMENT: {
-        DEV: 'staging',
+        DEV: 'development',
         STAGING: 'staging',
         PRODUCTION: 'production',
         ADHOC: 'adhoc',

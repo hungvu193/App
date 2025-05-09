@@ -103,7 +103,6 @@ function SettlementButton({
         selector: (paymentMethod) => getLastPolicyPaymentMethod(policyIDKey, paymentMethod),
     });
 
-    console.log({prevPaymentMethod});
     const lastBankAccountID = getLastPolicyBankAccountID(policyIDKey, iouReport?.type as keyof LastPaymentMethodType);
     const [fundList = {}] = useOnyx(ONYXKEYS.FUND_LIST, {canBeMissing: true});
     const [policies] = useOnyx(ONYXKEYS.COLLECTION.POLICY, {canBeMissing: true});
@@ -153,8 +152,6 @@ function SettlementButton({
     }
 
     function getLatestBankAccountItem() {
-        // if(lastPaymentMethod === CONST.PAYMENT_METHODS.PERSONAL_BANK_ACCOUNT) {
-        // }
         if (!hasVBBA(policy?.id)) {
             return;
         }
@@ -205,6 +202,7 @@ function SettlementButton({
         } else if (isLastPaymentPolicyID) {
             resetPreferredPaymentMethod(policyID, lastPaymentMethodType, prevPaymentMethod ?? '', lastPaymentMethod);
         }
+        // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
     }, [hasNewBankAccount, isLastPaymentPolicyID]);
 
     const isLastPaymentPolicyRemoved = lastPaymentMethod && !Object.values(CONST.IOU.PAYMENT_TYPE).includes(lastPaymentMethod) && !activeAdminPolicies.length;
@@ -215,41 +213,8 @@ function SettlementButton({
         } else if (hasNewPolicy) {
             savePreferredPaymentMethod(policyIDKey, activeAdminPolicies.at(0)?.id ?? '');
         }
+        // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
     }, [isLastPaymentPolicyID]);
-
-    // // this effect will be triggered when a user creates a workspace separate from the IOU
-    // useEffect(() => {
-    //     if (!iouReport?.policyID || isInvoiceReport || isExpenseReportUtil(iouReport) || lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.EXPENSIFY) {
-    //         return;
-    //     }
-
-    //     if (hasSinglePolicy && !lastPaymentMethod && !personalBankAccountList.length) {
-    //         savePreferredPaymentMethod(iouReport?.policyID, activeAdminPolicies.at(0)?.id ?? '');
-    //         return;
-    //     }
-
-    //     // reset last preferred payment method if the workspace is removed
-    //     if (!activeAdminPolicies.length && lastPaymentPolicy) {
-    //         savePreferredPaymentMethod(iouReport?.policyID, prevPaymentMethod ?? '');
-    //     }
-    // }, [hasSinglePolicy]);
-
-    // useEffect(() => {
-    //     if (!iouReport?.policyID || isInvoiceReport || isExpenseReportUtil(iouReport)) {
-    //         return;
-    //     }
-
-    //     // sets last payment method as the user showed an intention to pay by connecting BA to their account
-    //     if (personalBankAccountList.length && !lastPaymentMethod) {
-    //         savePreferredPaymentMethod(iouReport?.policyID, CONST.IOU.PAYMENT_TYPE.EXPENSIFY);
-    //         return;
-    //     }
-
-    //     // resets last preferred payment method if a BA is disconnected
-    //     if (lastPaymentMethod && !personalBankAccountList.length && lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.EXPENSIFY) {
-    //         savePreferredPaymentMethod(iouReport?.policyID, prevPaymentMethod ?? '');
-    //     }
-    // }, [bankAccountList]);
 
     const latestBankItem = getLatestBankAccountItem();
 
@@ -507,7 +472,6 @@ function SettlementButton({
 
         if (lastPaymentMethod === CONST.IOU.PAYMENT_TYPE.EXPENSIFY || (hasIntentToPay && isInvoiceReportUtil(iouReport))) {
             const bankAccountToDisplay = hasIntentToPay ? (formattedPaymentMethods.at(0) as BankAccount) : bankAccount;
-            const personalBankAccountList = getLatestPersonalBankAccount();
 
             if (isBusinessInvoiceRoom(chatReport) && bankAccountToDisplay) {
                 return translate('iou.invoiceBussinessBank', {lastFour: bankAccountToDisplay?.accountData?.accountNumber?.slice(-4) ?? ''});
@@ -607,7 +571,7 @@ function SettlementButton({
                     onOptionSelected={(option) => handlePaymentSelection(undefined, option.value, triggerKYCFlow)}
                     style={style}
                     shouldPopoverUseScrollView
-                    containerStyles={{maxHeight: 515}}
+                    containerStyles={{maxHeight: 500, paddingBottom: 0}}
                     wrapperStyle={wrapperStyle}
                     disabledStyle={disabledStyle}
                     buttonSize={buttonSize}

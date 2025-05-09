@@ -4,7 +4,7 @@ import {useOnyx} from 'react-native-onyx';
 import Badge from '@components/Badge';
 import Button from '@components/Button';
 import * as Expensicons from '@components/Icon/Expensicons';
-import {PaymentMethodType} from '@components/KYCWall/types';
+import type {PaymentMethodType} from '@components/KYCWall/types';
 import SettlementButton from '@components/SettlementButton';
 import useLocalize from '@hooks/useLocalize';
 import useNetwork from '@hooks/useNetwork';
@@ -68,14 +68,13 @@ function ActionCell({
 
     const confirmPayment = useCallback(
         (type: PaymentMethodType | undefined) => {
-            console.log({chatReport, type, iouReport, reportID});
             if (!type || !chatReport) {
                 return;
             }
 
             payMoneyRequest(type, chatReport, iouReport);
         },
-        [chatReport, iouReport, chatReport],
+        [chatReport, iouReport],
     );
 
     if ((parentAction !== CONST.SEARCH.ACTION_TYPES.PAID && action === CONST.SEARCH.ACTION_TYPES.PAID) || (action === CONST.SEARCH.ACTION_TYPES.DONE && !isChildListItem)) {
