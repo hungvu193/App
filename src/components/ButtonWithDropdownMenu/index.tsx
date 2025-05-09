@@ -69,6 +69,10 @@ function ButtonWithDropdownMenu<IValueType>({
     const nullCheckRef = (ref: MutableRefObject<View | null>) => ref ?? null;
 
     useEffect(() => {
+        setSelectedItemIndex(defaultSelectedIndex);
+    }, [defaultSelectedIndex]);
+
+    useEffect(() => {
         if (!dropdownAnchor.current) {
             return;
         }
@@ -238,6 +242,10 @@ function ButtonWithDropdownMenu<IValueType>({
                               }
                             : () => {
                                   onOptionSelected?.(item);
+                                  if (!item.shouldUpdateSelectedIndex && typeof item.shouldUpdateSelectedIndex === 'boolean') {
+                                      return;
+                                  }
+
                                   setSelectedItemIndex(index);
                               },
                         shouldCallAfterModalHide: true,

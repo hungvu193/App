@@ -10378,6 +10378,21 @@ function navigateToStartStepIfScanFileCannotBeRead(
     readFileAsync(receiptPath.toString(), receiptFilename, onSuccess, onFailure, receiptType);
 }
 
+// resets last payment method to the previous value instead of an empty string
+function resetPreferredPaymentMethod(policyID: string, type: ValueOf<typeof CONST.LAST_PAYMENT_METHOD> | undefined, prevPaymentMethod: string, paymentMethod?: string) {
+    const name = prevPaymentMethod !== paymentMethod ? prevPaymentMethod ?? paymentMethod : '';
+    const value = type
+        ? {
+              [type]: {name},
+              [CONST.LAST_PAYMENT_METHOD.LAST_USED]: {name},
+          }
+        : name;
+
+    Onyx.merge(`${ONYXKEYS.NVP_LAST_PAYMENT_METHOD}`, {
+        [policyID]: value,
+    });
+}
+
 /** Save the preferred payment method for a policy or personal DM */
 function savePreferredPaymentMethod(policyID: string | undefined, paymentMethod: string, type: ValueOf<typeof CONST.LAST_PAYMENT_METHOD> | undefined) {
     if (!policyID) {
@@ -10807,6 +10822,7 @@ export {
     resetSplitShares,
     resetDraftTransactionsCustomUnit,
     savePreferredPaymentMethod,
+    resetPreferredPaymentMethod,
     sendInvoice,
     sendMoneyElsewhere,
     sendMoneyWithWallet,

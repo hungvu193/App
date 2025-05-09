@@ -117,9 +117,11 @@ function KYCWall({
                         const policyExpenseChatReportID = getPolicyExpenseChat(iouReport.ownerAccountID, policy.id)?.reportID;
                         if (!policyExpenseChatReportID) {
                             const {policyExpenseChatReportID: newPolicyExpenseChatReportID} = moveIOUReportToPolicyAndInviteSubmitter(iouReport.reportID, policy.id) ?? {};
+                            savePreferredPaymentMethod(iouReport.policyID, policy.id ?? '', CONST.LAST_PAYMENT_METHOD.IOU);
                             Navigation.navigate(ROUTES.REPORT_WITH_ID.getRoute(newPolicyExpenseChatReportID));
                         } else {
                             moveIOUReportToPolicy(iouReport.reportID, policy.id, true);
+                            savePreferredPaymentMethod(iouReport.policyID, policy.id ?? '', CONST.LAST_PAYMENT_METHOD.IOU);
                             Navigation.navigate(ROUTES.REPORT_WITH_ID.getRoute(policyExpenseChatReportID));
                         }
 

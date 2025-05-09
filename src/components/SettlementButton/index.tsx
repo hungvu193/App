@@ -27,7 +27,7 @@ import {
 } from '@libs/ReportUtils';
 import {shouldRestrictUserBillableActions} from '@libs/SubscriptionUtils';
 import {setPersonalBankAccountContinueKYCOnSuccess} from '@userActions/BankAccounts';
-import {approveMoneyRequest, savePreferredPaymentMethod as savePreferredPaymentMethodIOU} from '@userActions/IOU';
+import {approveMoneyRequest, resetPreferredPaymentMethod, savePreferredPaymentMethod as savePreferredPaymentMethodIOU} from '@userActions/IOU';
 import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
 import ROUTES from '@src/ROUTES';
@@ -191,6 +191,7 @@ function SettlementButton({
     };
 
     const personalBankAccountList = getLatestPersonalBankAccount();
+    const lastPaymentMethodType = getLastPaymentMethodType();
 
     const isLastPaymentPolicyID = !!activeAdminPolicies.some((activePolicy) => activePolicy.id === lastPaymentMethod);
     const hasNewBankAccount = policy?.achAccount && !lastPaymentMethod && !isLastPaymentPolicyID;
@@ -199,13 +200,21 @@ function SettlementButton({
             return;
         }
 
-        savePreferredPaymentMethod(policyID, hasNewBankAccount ? CONST.IOU.PAYMENT_TYPE.VBBA : prevPaymentMethod ?? '');
+        if (hasNewBankAccount) {
+            savePreferredPaymentMethod(policyID, CONST.IOU.PAYMENT_TYPE.VBBA);
+        } else if (isLastPaymentPolicyID) {
+            resetPreferredPaymentMethod(policyID, lastPaymentMethodType, prevPaymentMethod ?? '', lastPaymentMethod);
+        }
     }, [hasNewBankAccount, isLastPaymentPolicyID]);
 
-    const isLastPaymentPolicyRemoved = isLastPaymentPolicyID && !activeAdminPolicies.length;
+    const isLastPaymentPolicyRemoved = lastPaymentMethod && !Object.values(CONST.IOU.PAYMENT_TYPE).includes(lastPaymentMethod) && !activeAdminPolicies.length;
     const hasNewPolicy = hasSinglePolicy && !lastPaymentMethod && !personalBankAccountList.length;
     useEffect(() => {
-        savePreferredPaymentMethod(policyIDKey, isLastPaymentPolicyRemoved ? prevPaymentMethod ?? '' : hasNewPolicy ? activeAdminPolicies.at(0)?.id ?? '' : '');
+        if (!hasNewPolicy && isLastPaymentPolicyRemoved) {
+            resetPreferredPaymentMethod(policyIDKey, lastPaymentMethodType, prevPaymentMethod ?? '', lastPaymentMethod);
+        } else if (hasNewPolicy) {
+            savePreferredPaymentMethod(policyIDKey, activeAdminPolicies.at(0)?.id ?? '');
+        }
     }, [isLastPaymentPolicyID]);
 
     // // this effect will be triggered when a user creates a workspace separate from the IOU
@@ -252,16 +261,19 @@ function SettlementButton({
                 text: hasActivatedWallet ? translate('iou.settleWallet', {formattedAmount: ''}) : translate('iou.settlePersonal', {formattedAmount: ''}),
                 icon: Expensicons.User,
                 value: CONST.PAYMENT_METHODS.PERSONAL_BANK_ACCOUNT,
+                shouldUpdateSelectedIndex: false,
             },
             [CONST.PAYMENT_METHODS.BUSINESS_BANK_ACCOUNT]: {
                 text: translate('iou.settleBusiness', {formattedAmount: ''}),
                 icon: Expensicons.Building,
                 value: CONST.PAYMENT_METHODS.BUSINESS_BANK_ACCOUNT,
+                shouldUpdateSelectedIndex: false,
             },
             [CONST.IOU.PAYMENT_TYPE.ELSEWHERE]: {
                 text: translate('iou.payElsewhere', {formattedAmount: ''}),
                 icon: Expensicons.CheckCircle,
                 value: CONST.IOU.PAYMENT_TYPE.ELSEWHERE,
+                shouldUpdateSelectedIndex: false,
             },
         };
 
@@ -465,14 +477,6 @@ function SettlementButton({
         if (paymentType === CONST.IOU.PAYMENT_TYPE.EXPENSIFY || paymentType === CONST.IOU.PAYMENT_TYPE.VBBA) {
             setPersonalBankAccountContinueKYCOnSuccess(ROUTES.ENABLE_PAYMENTS);
         }
-
-        // if we just created a workspace from iou we don't want to set preferred payment method here since we don't have
-        // the new policy id, we just created.
-        if (paymentType === CONST.IOU.PAYMENT_TYPE.VBBA && !selectedPolicy && !isExpenseReportUtil(iouReport)) {
-            return;
-        }
-
-        savePreferredPaymentMethod(policyIDKey, selectedPolicy?.id ?? paymentType);
     };
 
     const getCustomText = () => {
