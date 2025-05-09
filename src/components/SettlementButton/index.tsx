@@ -207,11 +207,12 @@ function SettlementButton({
 
     const isLastPaymentPolicyRemoved = lastPaymentMethod && !Object.values(CONST.IOU.PAYMENT_TYPE).includes(lastPaymentMethod) && !activeAdminPolicies.length;
     const hasNewPolicy = hasSinglePolicy && !lastPaymentMethod && !personalBankAccountList.length;
+    const newPolicyID = hasNewPolicy ? activeAdminPolicies.at(0)?.id : undefined;
     useEffect(() => {
         if (!hasNewPolicy && isLastPaymentPolicyRemoved) {
             resetPreferredPaymentMethod(policyIDKey, lastPaymentMethodType, prevPaymentMethod ?? '', lastPaymentMethod);
-        } else if (hasNewPolicy) {
-            savePreferredPaymentMethod(policyIDKey, activeAdminPolicies.at(0)?.id ?? '');
+        } else if (hasNewPolicy && newPolicyID) {
+            savePreferredPaymentMethod(policyIDKey, newPolicyID);
         }
         // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
     }, [isLastPaymentPolicyID]);
