@@ -23,6 +23,21 @@ Understanding the common terminology and abbreviations used in the travel indust
 
 # Common Travel Abbreviations
 
+<iframe src="youtube.com"></iframe>
+
+Understanding the common terminology and abbreviations used in the travel industry helps travelers, approvers, and admins communicate more clearly, navigate bookings more effectively, and make better-informed decisions.
+
+{% include video.html src="https://customer-dtm7nf3ai7b93j1q.cloudflarestream.com/b81eabafe1391ab06901ddc19dcda161" %}
+
+{% include video.html thumbnail="assets/images/your-image.png" src="https://customer-dtm7nf3ai7b93j1q.cloudflarestream.com/b81eabafe1391ab06901ddc19dcda161" %}
+
+{% include video.html thumbnail="assets/images/your-image.png" src="youtube.com" %}
+{% include video.html thumbnail="assets/images/your-image.png" src="https://youtube.com" %}
+{% include video.html thumbnail="assets/images/your-image.png" src="https://drive.com" %}
+{% include video.html thumbnail="assets/images/your-image.png" src="https://drive.google.com" %}
+{%include    video.html   thumbnail="assets/images/your-image.png" src="drive.google.com/"%}
+{% include video.html src="https://drive.google.com" thumbnail="assets/images/your-image.png" %}
+
 | Abbreviation | Definition |
 |---|---|
 | 2FA | 2FA, or two-factor authentication, is an extra layer of security used to protect online accounts. In addition to a password, users are also required to enter a code that is sent to their mobile device. This makes it more difficult for hackers to gain access to an account, as they would need to have both the password and the code. |
