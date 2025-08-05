@@ -15,6 +15,7 @@ Understanding the common terminology and abbreviations used in the travel indust
 {% include video.html thumbnail="assets/images/your-image.png" src="https://customer-dtm7nf3ai7b93j1q.cloudflarestream.com/b81eabafe1391ab06901ddc19dcda161" %}
 
 {% include video.html thumbnail="assets/images/your-image.png" src="youtube.com" %}
+{% include video.html thumbnail="assets/images/your-image.png" src="youtube.com" %}
 {% include video.html thumbnail="assets/images/your-image.png" src="https://youtube.com" %}
 {% include video.html thumbnail="assets/images/your-image.png" src="https://drive.com" %}
 {% include video.html thumbnail="assets/images/your-image.png" src="https://drive.google.com" %}
