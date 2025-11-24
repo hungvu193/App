@@ -1,0 +1,18 @@
+0 verbose cli /Users/hans/.nvm/versions/node/v20.18.1/bin/node /Users/hans/.nvm/versions/node/v20.18.1/bin/npm
+1 info using npm@10.8.2
+2 info using node@v20.18.1
+3 silly config load:file:/Users/hans/.nvm/versions/node/v20.18.1/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/hans/Documents/Outsourcing/App/.npmrc
+5 silly config load:file:/Users/hans/.npmrc
+6 silly config load:file:/Users/hans/.nvm/versions/node/v20.18.1/etc/npmrc
+7 verbose title npm run typecheck --pretty false --incremental false
+8 verbose argv "run" "typecheck" "--" "--pretty" "false" "--incremental" "false"
+9 verbose logfile logs-max:10 dir:/Users/hans/Documents/Outsourcing/App/.npm-cache/_logs/2025-11-24T14_54_12_347Z-
+10 verbose logfile /Users/hans/Documents/Outsourcing/App/.npm-cache/_logs/2025-11-24T14_54_12_347Z-debug-0.log
+11 silly logfile done cleaning log files
+12 verbose cwd /Users/hans/Documents/Outsourcing/App
+13 verbose os Darwin 24.5.0
+14 verbose node v20.18.1
+15 verbose npm  v10.8.2
+16 verbose exit 2
+17 verbose code 2

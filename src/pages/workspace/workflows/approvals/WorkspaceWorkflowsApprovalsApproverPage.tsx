@@ -1,27 +1,28 @@
-import {useNavigationState} from '@react-navigation/native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import type {SelectionListApprover} from '@components/ApproverSelectionList';
+import { useNavigationState } from '@react-navigation/native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import type { SelectionListApprover } from '@components/ApproverSelectionList';
 import ApproverSelectionList from '@components/ApproverSelectionList';
-import {FallbackAvatar} from '@components/Icon/Expensicons';
+import { FallbackAvatar } from '@components/Icon/Expensicons';
 import Text from '@components/Text';
 import useLocalize from '@hooks/useLocalize';
 import useOnyx from '@hooks/useOnyx';
 import useThemeStyles from '@hooks/useThemeStyles';
-import {clearApprovalWorkflowApprover, clearApprovalWorkflowApprovers, setApprovalWorkflowApprover} from '@libs/actions/Workflow';
+import { clearApprovalWorkflowApprover, clearApprovalWorkflowApprovers, setApprovalWorkflowApprover } from '@libs/actions/Workflow';
 import Navigation from '@libs/Navigation/Navigation';
-import type {PlatformStackScreenProps} from '@libs/Navigation/PlatformStackNavigation/types';
-import type {WorkspaceSplitNavigatorParamList} from '@libs/Navigation/types';
-import {getDefaultApprover, getMemberAccountIDsForWorkspace} from '@libs/PolicyUtils';
+import type { PlatformStackScreenProps } from '@libs/Navigation/PlatformStackNavigation/types';
+import type { WorkspaceSplitNavigatorParamList } from '@libs/Navigation/types';
+import { getDefaultApprover, getMemberAccountIDsForWorkspace } from '@libs/PolicyUtils';
 import AccessOrNotFoundWrapper from '@pages/workspace/AccessOrNotFoundWrapper';
 import MemberRightIcon from '@pages/workspace/MemberRightIcon';
 import withPolicyAndFullscreenLoading from '@pages/workspace/withPolicyAndFullscreenLoading';
-import type {WithPolicyAndFullscreenLoadingProps} from '@pages/workspace/withPolicyAndFullscreenLoading';
+import type { WithPolicyAndFullscreenLoadingProps } from '@pages/workspace/withPolicyAndFullscreenLoading';
 import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
 import ROUTES from '@src/ROUTES';
 import type SCREENS from '@src/SCREENS';
-import {personalDetailsByEmailSelector} from '@src/selectors/PersonalDetails';
+import { personalDetailsByEmailSelector } from '@src/selectors/PersonalDetails';
 import isLoadingOnyxValue from '@src/types/utils/isLoadingOnyxValue';
+
 
 type WorkspaceWorkflowsApprovalsApproverPageProps = WithPolicyAndFullscreenLoadingProps &
     PlatformStackScreenProps<WorkspaceSplitNavigatorParamList, typeof SCREENS.WORKSPACE.WORKFLOWS_APPROVALS_APPROVER>;
@@ -160,10 +161,10 @@ function WorkspaceWorkflowsApprovalsApproverPage({policy, personalDetails, isLoa
             }
 
             if (isInitialCreationFlow) {
-                if (isRemovingApprover) {
-                    Navigation.navigate(ROUTES.WORKSPACE_WORKFLOWS_APPROVALS_NEW.getRoute(route.params.policyID));
+                if (!isRemovingApprover && approver?.login) {
+                    Navigation.navigate(ROUTES.WORKSPACE_WORKFLOWS_APPROVALS_FORWARD_LIMIT_TO.getRoute(route.params.policyID, approver?.login ?? ''));
                 } else {
-                    Navigation.navigate(ROUTES.WORKSPACE_WORKFLOWS_APPROVALS_FORWARD_LIMIT_TO.getRoute(route.params.policyID,  approver?.login ?? ''));
+                    Navigation.navigate(ROUTES.WORKSPACE_WORKFLOWS_APPROVALS_NEW.getRoute(route.params.policyID));
                 }
             } else {
                 goBack();
