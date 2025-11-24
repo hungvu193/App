@@ -138,7 +138,8 @@ function WorkspaceWorkflowsApprovalsApproverPage({policy, personalDetails, isLoa
     const toggleApprover = useCallback(
         (approvers: SelectionListApprover[]) => {
             const approver = approvers.at(0);
-            if (selectedApproverEmail === approver?.login) {
+            const isRemovingApprover = selectedApproverEmail === approver?.login;
+            if (isRemovingApprover) {
                 clearApprovalWorkflowApprover({approverIndex, currentApprovalWorkflow});
             } else {
                 const newSelectedEmail = approver?.login ?? '';
@@ -159,7 +160,11 @@ function WorkspaceWorkflowsApprovalsApproverPage({policy, personalDetails, isLoa
             }
 
             if (isInitialCreationFlow) {
-                Navigation.navigate(ROUTES.WORKSPACE_WORKFLOWS_APPROVALS_NEW.getRoute(route.params.policyID));
+                if (isRemovingApprover) {
+                    Navigation.navigate(ROUTES.WORKSPACE_WORKFLOWS_APPROVALS_NEW.getRoute(route.params.policyID));
+                } else {
+                    Navigation.navigate(ROUTES.WORKSPACE_WORKFLOWS_APPROVALS_FORWARD_LIMIT_TO.getRoute(route.params.policyID,  approver?.login ?? ''));
+                }
             } else {
                 goBack();
             }

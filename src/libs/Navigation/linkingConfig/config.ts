@@ -777,6 +777,9 @@ const config: LinkingOptions<RootNavigatorParamList>['config'] = {
                         [SCREENS.WORKSPACE.WORKFLOWS_APPROVALS_APPROVER]: {
                             path: ROUTES.WORKSPACE_WORKFLOWS_APPROVALS_APPROVER.route,
                         },
+                        [SCREENS.WORKSPACE.WORKFLOWS_APPROVALS_FORWARD_LIMIT_TO]: {
+                            path: ROUTES.WORKSPACE_WORKFLOWS_APPROVALS_FORWARD_LIMIT_TO.route,
+                        },
                         [SCREENS.WORKSPACE.INVITE_MESSAGE]: {
                             path: ROUTES.WORKSPACE_INVITE_MESSAGE.route,
                         },

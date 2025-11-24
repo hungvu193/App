@@ -642,6 +642,7 @@ const SCREENS = {
         WORKFLOWS_APPROVALS_EDIT: 'Workspace_Approvals_Edit',
         WORKFLOWS_APPROVALS_EXPENSES_FROM: 'Workspace_Workflows_Approvals_Expenses_From',
         WORKFLOWS_APPROVALS_APPROVER: 'Workspace_Workflows_Approvals_Approver',
+        WORKFLOWS_APPROVALS_FORWARD_LIMIT_TO: 'Workspace_Workflows_Approvals_Forward_Limit_To',
         WORKFLOWS_AUTO_REPORTING_FREQUENCY: 'Workspace_Workflows_Auto_Reporting_Frequency',
         WORKFLOWS_AUTO_REPORTING_MONTHLY_OFFSET: 'Workspace_Workflows_Auto_Reporting_Monthly_Offset',
         WORKFLOWS_CONNECT_EXISTING_BANK_ACCOUNT: 'Workspace_Workflows_Connect_Existing_Bank_Account',

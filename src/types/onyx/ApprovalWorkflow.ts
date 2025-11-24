@@ -35,6 +35,16 @@ type Approver = {
      * example: A -> B -> C -> A (cycle)
      */
     isCircularReference?: boolean;
+
+    /**
+     * Approval limit for the approver
+     */
+    approvalLimit?: number;
+
+    /**
+     * Email of the user this user forwards all reports to when the report total exceeds the 'approvalLimit'
+     */
+    overLimitForwardsTo?: string;
 };
 
 /**

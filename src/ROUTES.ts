@@ -1672,6 +1672,10 @@ const ROUTES = {
             // eslint-disable-next-line no-restricted-syntax -- Legacy route generation
             getUrlWithBackToParam(`workspaces/${policyID}/workflows/approvals/approver?approverIndex=${approverIndex}` as const, backTo),
     },
+    WORKSPACE_WORKFLOWS_APPROVALS_FORWARD_LIMIT_TO: {
+        route: 'workspaces/:policyID/workflows/approvals/:firstApproverEmail/forward-limit-to',
+        getRoute: (policyID: string, firstApproverEmail: string) => `workspaces/${policyID}/workflows/approvals/${encodeURIComponent(firstApproverEmail)}/forward-limit-to` as const,
+    },
     WORKSPACE_WORKFLOWS_PAYER: {
         route: 'workspaces/:policyID/workflows/payer',
         getRoute: (policyId: string) => `workspaces/${policyId}/workflows/payer` as const,

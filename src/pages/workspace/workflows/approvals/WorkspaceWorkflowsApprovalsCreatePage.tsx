@@ -32,6 +32,7 @@ function WorkspaceWorkflowsApprovalsCreatePage({policy, isLoadingReportData = tr
     const styles = useThemeStyles();
     const {translate} = useLocalize();
     const [approvalWorkflow] = useOnyx(ONYXKEYS.APPROVAL_WORKFLOW, {canBeMissing: true});
+    
     const formRef = useRef<ScrollView>(null);
 
     // eslint-disable-next-line rulesdir/no-negated-variables

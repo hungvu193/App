@@ -266,6 +266,8 @@ function convertApprovalWorkflowToPolicyEmployees({
             email: approver.email,
             forwardsTo,
             pendingAction,
+            overLimitForwardsTo: approver.overLimitForwardsTo,
+            approvalLimit: approver.approvalLimit,
             pendingFields: {
                 forwardsTo: pendingAction,
             },

@@ -965,6 +965,10 @@ type FocusModeUpdateParams = {
     priorityModePageUrl: string;
 };
 
+type WorkflowsForwardLimitToPageSubtitleParams = {
+    approverDisplayName: string;
+};
+
 export type {
     SettlementAccountReconciliationParams,
     ToggleImportTitleParams,
@@ -1281,4 +1285,5 @@ export type {
     NextStepParams,
     ReportFieldParams,
     FocusModeUpdateParams,
+    WorkflowsForwardLimitToPageSubtitleParams,
 };
