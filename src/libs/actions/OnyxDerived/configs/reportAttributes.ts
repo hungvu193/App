@@ -20,7 +20,6 @@ const prepareReportKeys = (keys: string[]) => {
                     .replace(ONYXKEYS.COLLECTION.REPORT_METADATA, ONYXKEYS.COLLECTION.REPORT)
                     .replace(ONYXKEYS.COLLECTION.REPORT_ACTIONS, ONYXKEYS.COLLECTION.REPORT)
                     .replace(ONYXKEYS.COLLECTION.REPORT_NAME_VALUE_PAIRS, ONYXKEYS.COLLECTION.REPORT)
-                    .replace(ONYXKEYS.COLLECTION.REPORT_VIOLATIONS, ONYXKEYS.COLLECTION.REPORT),
             ),
         ),
     ];
@@ -71,7 +70,6 @@ export default createOnyxDerivedValueConfig({
         ONYXKEYS.PERSONAL_DETAILS_LIST,
         ONYXKEYS.SESSION,
         ONYXKEYS.COLLECTION.POLICY,
-        ONYXKEYS.COLLECTION.REPORT_VIOLATIONS,
         ONYXKEYS.COLLECTION.REPORT_METADATA,
     ],
     compute: (
