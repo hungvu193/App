@@ -137,20 +137,17 @@ describe('OnyxDerived', () => {
 
             // When the report attributes are recomputed with both report and transaction updates
             reportAttributes.compute([reports, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined], {areAllConnectionsSet: true});
-            const reportAttributesComputedValue = reportAttributes.compute(
-                [reports, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
-                {
-                    sourceValues: {
-                        [ONYXKEYS.COLLECTION.REPORT]: {
-                            [`${ONYXKEYS.COLLECTION.REPORT}${reportID1}`]: reports[`${ONYXKEYS.COLLECTION.REPORT}${reportID1}`],
-                        },
-                        [ONYXKEYS.COLLECTION.TRANSACTION]: {
-                            [`${ONYXKEYS.COLLECTION.TRANSACTION}${transaction.transactionID}`]: transaction,
-                        },
+            const reportAttributesComputedValue = reportAttributes.compute([reports, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined], {
+                sourceValues: {
+                    [ONYXKEYS.COLLECTION.REPORT]: {
+                        [`${ONYXKEYS.COLLECTION.REPORT}${reportID1}`]: reports[`${ONYXKEYS.COLLECTION.REPORT}${reportID1}`],
                     },
-                    areAllConnectionsSet: true,
+                    [ONYXKEYS.COLLECTION.TRANSACTION]: {
+                        [`${ONYXKEYS.COLLECTION.TRANSACTION}${transaction.transactionID}`]: transaction,
+                    },
                 },
-            ).reports;
+                areAllConnectionsSet: true,
+            }).reports;
 
             // Then the computed report attributes should contain both reports
             expect(Object.keys(reportAttributesComputedValue)).toEqual([reportID1, reportID2]);
