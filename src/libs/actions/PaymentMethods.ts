@@ -439,13 +439,8 @@ function hasPaymentMethodError(
         if (CardUtils.isPersonalCard(card)) {
             return true;
         }
-        if (!currentUserLogin || !policies) {
-            return true;
-        }
+
         const workspaceAccountID = Number(card?.fundID);
-        if (Number.isNaN(workspaceAccountID)) {
-            return true;
-        }
         const policy = policyList.find((p) => p?.workspaceAccountID === workspaceAccountID);
         return !!policy && isPolicyMember(policy, currentUserLogin);
     });
