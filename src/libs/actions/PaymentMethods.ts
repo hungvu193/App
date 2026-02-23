@@ -18,7 +18,7 @@ import * as CardUtils from '@libs/CardUtils';
 import GoogleTagManager from '@libs/GoogleTagManager';
 import Log from '@libs/Log';
 import Navigation from '@libs/Navigation/Navigation';
-import {isPolicyMember} from '@libs/PolicyUtils';
+import {isPolicyUser} from '@libs/PolicyUtils';
 import {getCardForSubscriptionBilling} from '@libs/SubscriptionUtils';
 import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
@@ -442,10 +442,10 @@ function hasPaymentMethodError(
 
         const workspaceAccountID = Number(card?.fundID);
         const policy = policyList.find((p) => p?.workspaceAccountID === workspaceAccountID);
-        return !!policy && isPolicyMember(policy, currentUserLogin);
+        return !!policy && isPolicyUser(policy, currentUserLogin);
     });
     // If there is card with errors, we should display the RBR if user is a member of the workspace.
-    return hasRelevantCardError && hasBankOrFundError;
+    return hasRelevantCardError || hasBankOrFundError;
 }
 
 type PaymentListKey =
