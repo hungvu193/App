@@ -444,8 +444,8 @@ function hasPaymentMethodError(
         const policy = policyList.find((p) => p?.workspaceAccountID === workspaceAccountID);
         return !!policy && isPolicyMember(policy, currentUserLogin);
     });
-
-    return hasRelevantCardError || hasBankOrFundError;
+    // If there is card with errors, we should display the RBR if user is a member of the workspace.
+    return hasRelevantCardError && hasBankOrFundError;
 }
 
 type PaymentListKey =
