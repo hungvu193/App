@@ -425,13 +425,7 @@ function hasPaymentMethodError(
     policies?: OnyxCollection<Policy>,
 ): boolean {
     const hasBankOrFundError = Object.values({...(bankList ?? {}), ...(fundList ?? {})}).some((item) => Object.keys(item?.errors ?? {}).length > 0);
-
     const currentUserLogin = session?.email;
-
-    if (!currentUserLogin || !policies) {
-        return hasBankOrFundError;
-    }
-
     const cardsWithErrors = Object.values(cardList ?? {}).filter((card) => Object.keys(card?.errors ?? {}).length > 0);
 
     const policyList = Object.values(policies ?? {}).filter(Boolean);
@@ -439,7 +433,6 @@ function hasPaymentMethodError(
         if (CardUtils.isPersonalCard(card)) {
             return true;
         }
-
         const workspaceAccountID = Number(card?.fundID);
         const policy = policyList.find((p) => p?.workspaceAccountID === workspaceAccountID);
         return !!policy && isPolicyUser(policy, currentUserLogin);
