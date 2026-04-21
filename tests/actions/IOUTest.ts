@@ -488,6 +488,7 @@ describe('actions/IOU', () => {
                 transaction: transactionToCategorize,
                 currentUserAccountID: RORY_ACCOUNT_ID,
                 currentUserEmail: RORY_EMAIL,
+                reportIDToName: {},
             });
             await waitForBatchedUpdates();
 
@@ -538,6 +539,7 @@ describe('actions/IOU', () => {
                 transaction: originalTransaction,
                 currentUserAccountID: RORY_ACCOUNT_ID,
                 currentUserEmail: RORY_EMAIL,
+                reportIDToName: {},
             });
             await waitForBatchedUpdates();
 
@@ -577,6 +579,7 @@ describe('actions/IOU', () => {
                 transaction: undefined,
                 currentUserAccountID: RORY_ACCOUNT_ID,
                 currentUserEmail: RORY_EMAIL,
+                reportIDToName: {},
             });
             await waitForBatchedUpdates();
 
@@ -611,6 +614,7 @@ describe('actions/IOU', () => {
                 amountOwed: 0,
                 currentUserAccountID: RORY_ACCOUNT_ID,
                 currentUserEmail: RORY_EMAIL,
+                reportIDToName: {},
             });
             await waitForBatchedUpdates();
 
