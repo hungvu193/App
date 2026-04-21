@@ -4674,10 +4674,10 @@ function getTransactionDetails(
     };
 }
 
-function getTransactionCommentObject(transaction: OnyxEntry<Transaction>): Comment {
+function getTransactionCommentObject(transaction: OnyxEntry<Transaction>, reportIDToName: Record<string, string>): Comment {
     return {
         ...transaction?.comment,
-        comment: Parser.htmlToMarkdown(transaction?.comment?.comment ?? ''),
+        comment: Parser.htmlToMarkdown(transaction?.comment?.comment ?? '', {reportIDToName}),
         waypoints: getWaypoints(transaction),
     };
 }
@@ -11415,6 +11415,7 @@ type CreateDraftTransactionParams = {
     transaction: OnyxEntry<Transaction>;
     currentUserAccountID: number;
     currentUserEmail: string;
+    reportIDToName: Record<string, string>;
 };
 
 function createDraftTransactionAndNavigateToParticipantSelector({
@@ -11432,6 +11433,7 @@ function createDraftTransactionAndNavigateToParticipantSelector({
     transaction,
     currentUserAccountID,
     currentUserEmail,
+    reportIDToName,
 }: CreateDraftTransactionParams): void {
     const transactionID = transaction?.transactionID;
     if (!transactionID || !reportID) {
@@ -11449,7 +11451,7 @@ function createDraftTransactionAndNavigateToParticipantSelector({
         .find((action) => isMoneyRequestAction(action) && getOriginalMessage(action)?.IOUTransactionID === transactionID);
 
     const {created, amount, currency, merchant, mccGroup} = getTransactionDetails(transaction) ?? {};
-    const baseComment = getTransactionCommentObject(transaction);
+    const baseComment = getTransactionCommentObject(transaction, reportIDToName);
     // Use modifiedAttendees if present (for edited transactions), otherwise use the attendees from comment
     const comment = {
         ...baseComment,

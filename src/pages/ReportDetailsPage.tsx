@@ -135,6 +135,7 @@ import type * as OnyxTypes from '@src/types/onyx';
 import type DeepValueOf from '@src/types/utils/DeepValueOf';
 import {isEmptyObject} from '@src/types/utils/EmptyObject';
 import type IconAsset from '@src/types/utils/IconAsset';
+import useParserExtras from '@hooks/useParserExtras';
 import type {WithReportOrNotFoundProps} from './inbox/report/withReportOrNotFound';
 import withReportOrNotFound from './inbox/report/withReportOrNotFound';
 
@@ -162,6 +163,7 @@ type CaseID = ValueOf<typeof CASES>;
 function ReportDetailsPage({policy, report, route, reportMetadata}: ReportDetailsPageProps) {
     const {translate, localeCompare, formatPhoneNumber} = useLocalize();
     const {isOffline} = useNetwork();
+    const {reportIDToName} = useParserExtras();
     const {isRestrictedToPreferredPolicy, preferredPolicyID} = usePreferredPolicy();
     const activePolicy = useActivePolicy();
     const styles = useThemeStyles();
@@ -473,6 +475,7 @@ function ReportDetailsPage({policy, report, route, reportMetadata}: ReportDetail
                         transaction: iouTransaction,
                         currentUserAccountID: currentUserPersonalDetails.accountID,
                         currentUserEmail: currentUserPersonalDetails.email ?? '',
+                        reportIDToName,
                     });
                 },
             });
@@ -497,6 +500,7 @@ function ReportDetailsPage({policy, report, route, reportMetadata}: ReportDetail
                             transaction: iouTransaction,
                             currentUserAccountID: currentUserPersonalDetails.accountID,
                             currentUserEmail: currentUserPersonalDetails.email ?? '',
+                            reportIDToName,
                         });
                     },
                 });
@@ -520,6 +524,7 @@ function ReportDetailsPage({policy, report, route, reportMetadata}: ReportDetail
                             transaction: iouTransaction,
                             currentUserAccountID: currentUserPersonalDetails.accountID,
                             currentUserEmail: currentUserPersonalDetails.email ?? '',
+                            reportIDToName,
                         });
                     },
                 });
@@ -651,6 +656,7 @@ function ReportDetailsPage({policy, report, route, reportMetadata}: ReportDetail
         ownerBillingGracePeriodEnd,
         iouTransaction,
         delegateEmail,
+        reportIDToName,
     ]);
 
     const displayNamesWithTooltips = useMemo(() => {

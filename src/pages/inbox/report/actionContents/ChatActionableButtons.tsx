@@ -31,6 +31,7 @@ import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
 import ROUTES from '@src/ROUTES';
 import type * as OnyxTypes from '@src/types/onyx';
+import useParserExtras from '@hooks/useParserExtras';
 
 type ChatActionableButtonsProps = {
     action: OnyxTypes.ReportAction;
@@ -47,7 +48,7 @@ function ChatActionableButtons({action, report, originalReport, reportID, origin
     const personalDetail = useCurrentUserPersonalDetails();
     const {isRestrictedToPreferredPolicy, preferredPolicyID} = usePreferredPolicy();
     const activePolicy = useActivePolicy();
-
+    const {reportIDToName} = useParserExtras();
     const [draftTransactionIDs] = useOnyx(ONYXKEYS.COLLECTION.TRANSACTION_DRAFT, {selector: validTransactionDraftIDsSelector});
     const [userBillingGracePeriodEnds] = useOnyx(ONYXKEYS.COLLECTION.SHARED_NVP_PRIVATE_USER_BILLING_GRACE_PERIOD_END);
     const [amountOwed] = useOnyx(ONYXKEYS.NVP_PRIVATE_AMOUNT_OWED);
@@ -180,6 +181,7 @@ function ChatActionableButtons({action, report, originalReport, reportID, origin
                         ...baseDraftTransactionParams,
                         ...extraParams,
                         actionName: TRACK_EXPENSE_ACTIONS[actionKey],
+                        reportIDToName,
                     });
                 },
             });
