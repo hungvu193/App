@@ -35,7 +35,7 @@ import {getAllCardsForWorkspace, getCardFeedIcon, getCardFeedWithDomainID, getPl
 import navigateAfterInteraction from '@libs/Navigation/navigateAfterInteraction';
 import type {PlatformStackScreenProps} from '@libs/Navigation/PlatformStackNavigation/types';
 import {getDisplayNameOrDefault, getPhoneNumber} from '@libs/PersonalDetailsUtils';
-import {isControlPolicy, isPolicyApprover} from '@libs/PolicyUtils';
+import {isControlPolicy, isPolicyApprover, isSubmitPolicy} from '@libs/PolicyUtils';
 import shouldRenderTransferOwnerButton from '@libs/shouldRenderTransferOwnerButton';
 import {convertPolicyEmployeesToApprovalWorkflows, updateWorkflowDataOnApproverRemoval} from '@libs/WorkflowUtils';
 import Navigation from '@navigation/Navigation';
@@ -338,7 +338,13 @@ function WorkspaceMemberDetailsPage({personalDetails, policy, route}: WorkspaceM
                                 interactive={!isReimburser}
                                 description={translate('common.role')}
                                 shouldShowRightIcon={!isReimburser}
-                                onPress={() => Navigation.navigate(ROUTES.WORKSPACE_MEMBER_DETAILS_ROLE.getRoute(policyID, accountID))}
+                                onPress={() => {
+                                    if (isSubmitPolicy(policy)) {
+                                        Navigation.navigate(ROUTES.WORKSPACE_UPGRADE.getRoute(policyID, CONST.UPGRADE_FEATURE_INTRO_MAPPING.roles.alias, ROUTES.WORKSPACE_MEMBER_DETAILS.getRoute(policyID, accountID)));
+                                        return;
+                                    }
+                                    Navigation.navigate(ROUTES.WORKSPACE_MEMBER_DETAILS_ROLE.getRoute(policyID, accountID))
+                                }}
                                 hintText={isReimburser ? translate('common.roleCannotBeChanged', workspaceWorkflowsPageURL) : undefined}
                                 shouldRenderHintAsHTML
                             />
