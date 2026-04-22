@@ -198,6 +198,17 @@ function WorkspaceWorkflowsPage({policy, route}: WorkspaceWorkflowsPageProps) {
             usedApproverEmails,
         });
 
+        if (isSubmitPolicy(policy)) {
+            Navigation.navigate(
+                ROUTES.WORKSPACE_UPGRADE.getRoute(
+                    route.params.policyID,
+                    CONST.UPGRADE_FEATURE_INTRO_MAPPING.approvalSubmit.alias,
+                    ROUTES.WORKSPACE_WORKFLOWS.getRoute(route.params.policyID),
+                ),
+            );
+            return;
+        }
+
         if (!isControlPolicy(policy)) {
             Navigation.navigate(
                 ROUTES.WORKSPACE_UPGRADE.getRoute(
@@ -334,16 +345,6 @@ function WorkspaceWorkflowsPage({policy, route}: WorkspaceWorkflowsPageProps) {
                             }
                             confirmDisableApprovals();
                         });
-                        return;
-                    }
-                    if (isSubmitPolicy(policy)) {
-                        Navigation.navigate(
-                            ROUTES.WORKSPACE_UPGRADE.getRoute(
-                                route.params.policyID,
-                                CONST.UPGRADE_FEATURE_INTRO_MAPPING.approvalSubmit.alias,
-                                ROUTES.WORKSPACE_WORKFLOWS.getRoute(route.params.policyID),
-                            ),
-                        );
                         return;
                     }
                     setWorkspaceApprovalMode(policy, policy?.owner ?? '', isEnabled ? updateApprovalMode : CONST.POLICY.APPROVAL_MODE.OPTIONAL, currentUserAccountID, currentUserEmail, {

@@ -340,10 +340,16 @@ function WorkspaceMemberDetailsPage({personalDetails, policy, route}: WorkspaceM
                                 shouldShowRightIcon={!isReimburser}
                                 onPress={() => {
                                     if (isSubmitPolicy(policy)) {
-                                        Navigation.navigate(ROUTES.WORKSPACE_UPGRADE.getRoute(policyID, CONST.UPGRADE_FEATURE_INTRO_MAPPING.roles.alias, ROUTES.WORKSPACE_MEMBER_DETAILS.getRoute(policyID, accountID)));
+                                        Navigation.navigate(
+                                            ROUTES.WORKSPACE_UPGRADE.getRoute(
+                                                policyID,
+                                                CONST.UPGRADE_FEATURE_INTRO_MAPPING.roles.alias,
+                                                ROUTES.WORKSPACE_MEMBER_DETAILS.getRoute(policyID, accountID),
+                                            ),
+                                        );
                                         return;
                                     }
-                                    Navigation.navigate(ROUTES.WORKSPACE_MEMBER_DETAILS_ROLE.getRoute(policyID, accountID))
+                                    Navigation.navigate(ROUTES.WORKSPACE_MEMBER_DETAILS_ROLE.getRoute(policyID, accountID));
                                 }}
                                 hintText={isReimburser ? translate('common.roleCannotBeChanged', workspaceWorkflowsPageURL) : undefined}
                                 shouldRenderHintAsHTML
