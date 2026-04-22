@@ -81,6 +81,7 @@ function UpgradeIntro({feature, onUpgrade, buttonDisabled, loading, isCategorizi
         'Accounting',
         'HandCard',
         'InvoiceBlue',
+        'Members',
     ]);
     const illustrationIcons = useMemoizedLazyExpensifyIcons(['IntacctSquare', 'NetSuiteSquare', 'QBDSquare', 'AdvancedApprovalsSquare', 'Unlock']);
     const imported = new Set([...Object.keys(illustrations), ...Object.keys(illustrationIcons)]);
