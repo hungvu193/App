@@ -410,7 +410,7 @@ function WorkspaceWorkflowsPage({policy, route}: WorkspaceWorkflowsPageProps) {
                         />
                     </>
                 ),
-                disabled: isSmartLimitEnabled || isDEWEnabled,
+                disabled: isSmartLimitEnabled || isDEWEnabled || isSubmitPolicy(policy),
                 isActive:
                     isDEWEnabled ||
                     (([CONST.POLICY.APPROVAL_MODE.BASIC, CONST.POLICY.APPROVAL_MODE.ADVANCED].some((approvalMode) => approvalMode === policy?.approvalMode) && !hasApprovalError) ?? false),

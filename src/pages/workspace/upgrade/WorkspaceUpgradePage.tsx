@@ -12,6 +12,7 @@ import usePolicyData from '@hooks/usePolicyData';
 import useThemeStyles from '@hooks/useThemeStyles';
 import {updateQuickbooksOnlineSyncClasses, updateQuickbooksOnlineSyncCustomers, updateQuickbooksOnlineSyncLocations} from '@libs/actions/connections/QuickbooksOnline';
 import {updateXeroMappings} from '@libs/actions/connections/Xero';
+import {enablePolicyTravel} from '@libs/actions/Policy/Travel';
 import Navigation from '@libs/Navigation/Navigation';
 import type {PlatformStackScreenProps} from '@libs/Navigation/PlatformStackNavigation/types';
 import type {SettingsNavigatorParamList} from '@libs/Navigation/types';
@@ -24,12 +25,16 @@ import {
     enableCompanyCards,
     enableExpensifyCard,
     enablePolicyAutoReimbursementLimit,
+    enablePolicyConnections,
     enablePolicyHR,
+    enablePolicyInvoicing,
     enablePolicyReportFields,
     enablePolicyRules,
+    isCurrencySupportedForDirectReimbursement,
     setPolicyPreventMemberCreatedTitle,
     setPolicyPreventSelfApproval,
     setWorkspaceApprovalMode,
+    setWorkspaceReimbursement,
     upgradeToCorporate,
 } from '@src/libs/actions/Policy/Policy';
 import ONYXKEYS from '@src/ONYXKEYS';
@@ -123,6 +128,11 @@ function WorkspaceUpgradePage({route}: WorkspaceUpgradePageProps) {
                 return;
             case CONST.UPGRADE_FEATURE_INTRO_MAPPING.rules.id:
             case CONST.UPGRADE_FEATURE_INTRO_MAPPING.perDiem.id:
+            case CONST.UPGRADE_FEATURE_INTRO_MAPPING.invoicing.id:
+            case CONST.UPGRADE_FEATURE_INTRO_MAPPING.accounting.id:
+            case CONST.UPGRADE_FEATURE_INTRO_MAPPING.expensifyCard.id:
+            case CONST.UPGRADE_FEATURE_INTRO_MAPPING.companyCardSubmit.id:
+            case CONST.UPGRADE_FEATURE_INTRO_MAPPING.travelSubmit.id:
             case CONST.UPGRADE_FEATURE_INTRO_MAPPING.hr.id:
                 return Navigation.goBack(ROUTES.WORKSPACE_MORE_FEATURES.getRoute(policyID));
             default:
@@ -193,6 +203,7 @@ function WorkspaceUpgradePage({route}: WorkspaceUpgradePageProps) {
                 enablePolicyRules(policy, true, false, policyDataRef.current);
                 break;
             case CONST.UPGRADE_FEATURE_INTRO_MAPPING.companyCards.id:
+            case CONST.UPGRADE_FEATURE_INTRO_MAPPING.companyCardSubmit.id:
                 enableCompanyCards(policyID, true, false);
                 break;
             case CONST.UPGRADE_FEATURE_INTRO_MAPPING.perDiem.id:
@@ -208,7 +219,40 @@ function WorkspaceUpgradePage({route}: WorkspaceUpgradePageProps) {
             case CONST.UPGRADE_FEATURE_INTRO_MAPPING.expensifyCard.id:
                 enableExpensifyCard(policyID, true);
                 break;
+            case CONST.UPGRADE_FEATURE_INTRO_MAPPING.payments.id: {
+                let newReimbursementChoice;
+                if (!!policy?.achAccount && !isCurrencySupportedForDirectReimbursement(policy?.outputCurrency ?? '')) {
+                    newReimbursementChoice = CONST.POLICY.REIMBURSEMENT_CHOICES.REIMBURSEMENT_MANUAL;
+                } else {
+                    newReimbursementChoice = CONST.POLICY.REIMBURSEMENT_CHOICES.REIMBURSEMENT_YES;
+                }
+
+                const newReimburserEmail = policy?.achAccount?.reimburser ?? policy?.owner;
+                setWorkspaceReimbursement({
+                    policyID,
+                    currentAchAccount: policy?.achAccount,
+                    currentReimbursementChoice: policy?.reimbursementChoice,
+                    reimbursementChoice: newReimbursementChoice,
+                    reimburserEmail: newReimburserEmail ?? '',
+                    bankAccountID: policy?.achAccount?.bankAccountID,
+                    accountNumber: policy?.achAccount?.accountNumber,
+                    addressName: policy?.achAccount?.addressName,
+                    bankName: policy?.achAccount?.bankName,
+                    state: policy?.achAccount?.state,
+                });
+                break;
+            }
+            case CONST.UPGRADE_FEATURE_INTRO_MAPPING.accounting.id:
+                enablePolicyConnections(policyID, true);
+                break;
+            case CONST.UPGRADE_FEATURE_INTRO_MAPPING.travelSubmit.id:
+                enablePolicyTravel(policyID, true);
+                break;
+            case CONST.UPGRADE_FEATURE_INTRO_MAPPING.invoicing.id:
+                enablePolicyInvoicing(policyID, true);
+                break;
             default:
+                break;
         }
     }, [
         policyID,
