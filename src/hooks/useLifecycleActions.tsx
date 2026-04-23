@@ -8,7 +8,8 @@ import {useSearchActionsContext, useSearchStateContext} from '@components/Search
 import Text from '@components/Text';
 import {search} from '@libs/actions/Search';
 import getNonEmptyStringOnyxID from '@libs/getNonEmptyStringOnyxID';
-import {getValidConnectedIntegration} from '@libs/PolicyUtils';
+import Navigation from '@libs/Navigation/Navigation';
+import {getValidConnectedIntegration, isSubmitPolicy} from '@libs/PolicyUtils';
 import {getFilteredReportActionsForReportView} from '@libs/ReportActionsUtils';
 import {
     getIntegrationNameFromExportMessage as getIntegrationNameFromExportMessageUtils,
@@ -25,6 +26,7 @@ import {approveMoneyRequest, reopenReport, retractReport, submitReport, unapprov
 import {markPendingRTERTransactionsAsCash} from '@userActions/Transaction';
 import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
+import ROUTES from '@src/ROUTES';
 import useConfirmModal from './useConfirmModal';
 import useConfirmPendingRTERAndProceed from './useConfirmPendingRTERAndProceed';
 import useCurrentUserPersonalDetails from './useCurrentUserPersonalDetails';
@@ -180,6 +182,13 @@ function useLifecycleActions({reportID, startApprovedAnimation, startSubmittingA
         }
 
         const doSubmit = () => {
+            if (isSubmitPolicy(policy)) {
+                Navigation.navigate(ROUTES.REPORT_SUBMIT_TO.getRoute(moneyRequestReport.reportID, Navigation.getActiveRoute()));
+                if (skipAnimation) {
+                    clearSelectedTransactions(true);
+                }
+                return;
+            }
             submitReport({
                 expenseReport: moneyRequestReport,
                 policy,
@@ -228,6 +237,10 @@ function useLifecycleActions({reportID, startApprovedAnimation, startSubmittingA
                     return;
                 }
                 confirmPendingRTERAndProceed(() => {
+                    if (isSubmitPolicy(policy)) {
+                        Navigation.navigate(ROUTES.REPORT_SUBMIT_TO.getRoute(moneyRequestReport.reportID, Navigation.getActiveRoute()));
+                        return;
+                    }
                     submitReport({
                         expenseReport: moneyRequestReport,
                         policy,
