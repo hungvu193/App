@@ -918,6 +918,11 @@ function isCollectPolicy(policy: OnyxEntry<Policy>): boolean {
     return policy?.type === CONST.POLICY.TYPE.TEAM;
 }
 
+// TODO: Implement real submit policy detection logic
+function isSubmitPolicy(policy: OnyxEntry<Policy>): boolean {
+    return true;
+}
+
 function isTaxTrackingEnabled(
     isPolicyExpenseChatOrUnreportedExpense: boolean,
     policy: OnyxEntry<Policy>,
@@ -2301,6 +2306,7 @@ export {
     isPolicyApprover,
     getHRConnectionNames,
     isGustoConnected,
+    isSubmitPolicy,
 };
 
 export type {MemberEmailsToAccountIDs};

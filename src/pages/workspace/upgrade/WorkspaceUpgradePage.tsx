@@ -97,6 +97,15 @@ function WorkspaceUpgradePage({route}: WorkspaceUpgradePageProps) {
             return;
         }
         switch (feature?.id) {
+            case CONST.UPGRADE_FEATURE_INTRO_MAPPING.approveReport.id: {
+                const {reportID} = route.params;
+                if (reportID) {
+                    Navigation.goBack(ROUTES.REPORT_WITH_ID.getRoute(reportID));
+                    return;
+                }
+                Navigation.goBack();
+                return;
+            }
             case CONST.UPGRADE_FEATURE_INTRO_MAPPING.approvals.id:
             case CONST.UPGRADE_FEATURE_INTRO_MAPPING.multiApprovalLevels.id:
                 Navigation.goBack();
@@ -126,7 +135,7 @@ function WorkspaceUpgradePage({route}: WorkspaceUpgradePageProps) {
             default:
                 return route.params.backTo ? Navigation.goBack(route.params.backTo) : Navigation.goBack();
         }
-    }, [feature, policyID, route.params?.backTo, route.params?.featureName, featureNameAlias]);
+    }, [feature, policyID, route.params?.backTo, route.params?.featureName, route.params?.reportID, featureNameAlias]);
 
     const onUpgradeToCorporate = () => {
         if (!canPerformUpgrade || !policy) {
@@ -200,6 +209,9 @@ function WorkspaceUpgradePage({route}: WorkspaceUpgradePageProps) {
                 enablePolicyHR(policyID, true);
                 break;
             case CONST.UPGRADE_FEATURE_INTRO_MAPPING.approvals.id:
+                setWorkspaceApprovalMode(policy, defaultApprover, CONST.POLICY.APPROVAL_MODE.ADVANCED, accountID, email);
+                break;
+            case CONST.UPGRADE_FEATURE_INTRO_MAPPING.approveReport.id:
                 setWorkspaceApprovalMode(policy, defaultApprover, CONST.POLICY.APPROVAL_MODE.ADVANCED, accountID, email);
                 break;
             default:
